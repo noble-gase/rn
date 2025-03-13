@@ -1,4 +1,4 @@
-# rn
+# 氡-Rn
 
 [<img alt="crates.io" src="https://img.shields.io/crates/v/rn.svg?style=for-the-badge&color=fc8d62&logo=rust" height="20">](https://crates.io/crates/rn)
 [<img alt="MIT" src="http://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge" height="20">](http://opensource.org/licenses/MIT)
