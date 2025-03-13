@@ -8,7 +8,7 @@
 ## 安装
 
 ```shell
-cargo install rn
+cargo install rnx
 ```
 
 ## 特点
