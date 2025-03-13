@@ -1,5 +1,5 @@
 [package]
-name = "rn"
+name = "radon"
 version = "0.0.1"
 edition = "2021"
 description = "Rust web development scaffolding, support salvo and axum."
@@ -9,7 +9,7 @@ repository = "https://github.com/noble-gase/rn"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[bin]]
-name = "rn"
+name = "radon"
 path = "src/main.rs"
 
 [dependencies]
