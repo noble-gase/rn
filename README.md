@@ -28,8 +28,8 @@ cargo install rnx
 #### 单应用
 
 ```shell
-rn new --name=demo # salvo
-rn new --name=demo --axum # axum
+rnx new --name=demo # salvo
+rnx new --name=demo --axum # axum
 .
 ├── Cargo.toml
 ├── Dockerfile
@@ -49,8 +49,8 @@ rn new --name=demo --axum # axum
 
 ```shell
 # http
-rn new --name=demo --app=foo --app=bar # salvo
-rn new --name=demo --app=foo --app=bar --axum # axum
+rnx new --name=demo --app=foo --app=bar # salvo
+rnx new --name=demo --app=foo --app=bar --axum # axum
 .
 ├── Cargo.toml
 ├── foo.dockerfile
@@ -76,8 +76,8 @@ rn new --name=demo --app=foo --app=bar --axum # axum
 
 ```shell
 # 多应用项目适用，需在项目根目录执行（即：Cargo.toml所在目录）
-rn app --name=foo --name=bar # 创建salvo应用
-rn app --name=foo --name=bar --axum # 创建axum应用
+rnx app --name=foo --name=bar # 创建salvo应用
+rnx app --name=foo --name=bar --axum # 创建axum应用
 .
 ├── Cargo.toml
 ├── foo.dockerfile
