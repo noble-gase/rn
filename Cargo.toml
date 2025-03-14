@@ -3,7 +3,7 @@ name = "rnx"
 version = "0.0.1"
 edition = "2021"
 description = "Rust web development scaffolding, support salvo and axum."
-license = "Apache-2.0"
+license = "MIT"
 repository = "https://github.com/noble-gase/rn"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
