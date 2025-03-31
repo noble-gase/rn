@@ -95,9 +95,9 @@ rnx app --name=foo --name=bar --axum # 创建axum应用
 │   │   ├── foo
 │   │   │   ├── ...
 │   │   │   └── main.rs
-│   │   ├── bar
-│   │   │   ├── ...
-│   │   │   └── main.rs
+│   │   └── bar
+│   │       ├── ...
+│   │       └── main.rs
 │   └── shared
 ├── Cargo.toml
 ├── foo.dockerfile
