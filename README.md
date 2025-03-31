@@ -84,7 +84,7 @@ rnx new --name=demo --app=foo --app=bar --axum # axum
 
 ## 创建应用
 
-> 多应用项目适用，需在项目根目录执行（即：Cargo.toml所在目录）
+> 多应用项目适用，需在项目根目录执行（即：`Cargo.toml` 所在目录）
 
 ```shell
 rnx app --name=foo --name=bar # 创建salvo应用
