@@ -1,7 +1,7 @@
 use salvo::Router;
 
-use crate::api;
+use crate::handler;
 
 pub fn greeter() -> Router {
-    Router::with_path("greeter").post(api::greeter::hello)
+    Router::with_path("greeter").post(handler::greeter::hello)
 }

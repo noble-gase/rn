@@ -31,18 +31,23 @@ cargo install rnx
 rnx new --name=demo # salvo
 rnx new --name=demo --axum # axum
 .
+├── src
+│   ├── app
+│   │   ├── cmd
+│   │   ├── hanlder
+│   │   ├── middleware
+│   │   ├── router
+│   │   ├── service
+│   │   └── main.rs
+│   └── shared
+│       ├── core
+│       ├── middleware
+│       ├── result
+│       ├── util
+│       └── lib.rs
 ├── Cargo.toml
 ├── Dockerfile
-├── config.toml
-└── src
-    ├── app
-    │   ├── api
-    │   ├── cmd
-    │   ├── middleware
-    │   ├── router
-    │   ├── service
-    │   └── main.rs
-    └── internal
+└── config.toml
 ```
 
 #### 多应用
@@ -52,47 +57,53 @@ rnx new --name=demo --axum # axum
 rnx new --name=demo --app=foo --app=bar # salvo
 rnx new --name=demo --app=foo --app=bar --axum # axum
 .
+├── src
+│   ├── app
+│   │   ├── foo
+│   │   │   ├── cmd
+│   │   │   ├── handler
+│   │   │   ├── middleware
+│   │   │   ├── router
+│   │   │   ├── service
+│   │   │   └── main.rs
+│   │   └── bar
+│   │       ├── ...
+│   │       └── main.rs
+│   └── shared
+│       ├── core
+│       ├── middleware
+│       ├── result
+│       ├── util
+│       └── lib.rs
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
 ├── foo_config.toml
-├── bar_config.toml
-└── src
-    ├── app
-    │   ├── foo
-    │   │   ├── api
-    │   │   ├── cmd
-    │   │   ├── middleware
-    │   │   ├── router
-    │   │   ├── service
-    │   │   └── main.rs
-    │   ├── bar
-    │   │   ├── ...
-    │   │   └── main.rs
-    └── internal
+└── bar_config.toml
 ```
 
 ## 创建应用
 
+> 多应用项目适用，需在项目根目录执行（即：Cargo.toml所在目录）
+
 ```shell
-# 多应用项目适用，需在项目根目录执行（即：Cargo.toml所在目录）
 rnx app --name=foo --name=bar # 创建salvo应用
 rnx app --name=foo --name=bar --axum # 创建axum应用
 .
+├── src
+│   ├── app
+│   │   ├── foo
+│   │   │   ├── ...
+│   │   │   └── main.rs
+│   │   ├── bar
+│   │   │   ├── ...
+│   │   │   └── main.rs
+│   └── shared
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
 ├── foo_config.toml
-├── bar_config.toml
-└── src
-    ├── app
-    │   ├── foo
-    │   │   ├── ...
-    │   │   └── main.rs
-    │   ├── bar
-    │   │   ├── ...
-    │   │   └── main.rs
-    └── internal
+└── bar_config.toml
 ```
 
 **Enjoy 😊**

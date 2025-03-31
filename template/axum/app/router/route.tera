@@ -4,7 +4,7 @@ use axum::{
 };
 use tower_http::cors::CorsLayer;
 
-use crate::api::greeter;
+use crate::handler::greeter;
 
 pub fn init() -> Router {
     // 开放
@@ -14,15 +14,15 @@ pub fn init() -> Router {
     Router::new()
         .route("/", get(|| async { "☺ welcome to Rust app" }))
         .nest("/v1", open)
-        .layer(axum::middleware::from_fn(internal::middleware::log::handle))
+        .layer(axum::middleware::from_fn(shared::middleware::log::handle))
         .layer(
             CorsLayer::very_permissive()
-                .expose_headers(vec![internal::middleware::trace::TRACE_ID]),
+                .expose_headers(vec![shared::middleware::trace::TRACE_ID]),
         )
         .layer(axum::middleware::from_fn(
-            internal::middleware::catch_panic::handle,
+            shared::middleware::catch_panic::handle,
         ))
         .layer(axum::middleware::from_fn(
-            internal::middleware::trace::handle,
+            shared::middleware::trace::handle,
         ))
 }

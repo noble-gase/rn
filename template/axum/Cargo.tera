@@ -11,8 +11,8 @@ name = "{{ app.name }}"
 path = "{{ app.mainfile }}"
 {% endfor %}
 [lib]
-name = "internal"
-path = "src/internal/lib.rs"
+name = "shared"
+path = "src/shared/lib.rs"
 
 [dependencies]
 futures = "0.3"

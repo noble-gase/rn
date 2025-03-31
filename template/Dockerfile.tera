@@ -4,7 +4,11 @@ WORKDIR /project
 
 COPY . .
 
+{% if dockerfile == "Dockerfile" -%}
 RUN cargo build --release
+{% else %}
+RUN cargo build --bin {{ app_name }} --release
+{% endif -%}
 
 FROM debian:bullseye-slim
 

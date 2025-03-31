@@ -2,7 +2,7 @@ use axum::Json;
 use axum_extra::extract::WithRejection;
 use validator::Validate;
 
-use internal::result::{code::Code, rejection::IRejection, ApiResult};
+use shared::result::{code::Code, rejection::IRejection, ApiResult};
 
 use crate::service::{
     self,

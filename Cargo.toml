@@ -1,6 +1,6 @@
 [package]
 name = "rnx"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 description = "Rust web development scaffolding, support salvo and axum."
 license = "MIT"

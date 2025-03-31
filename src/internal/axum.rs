@@ -40,82 +40,82 @@ pub fn other() -> Tera {
     tera
 }
 
-pub fn internal() -> Tera {
+pub fn shared() -> Tera {
     let mut tera = Tera::default();
     // 使用 include_str! 宏将模板文件嵌入到二进制文件中
     tera.add_raw_templates(vec![
         // lib.rs
         (
             "lib.rs",
-            include_str!("../../template/axum/internal/lib.tera"),
+            include_str!("../../template/axum/shared/lib.tera"),
         ),
         // core
         (
             "core/mod.rs",
-            include_str!("../../template/axum/internal/core/mod.tera"),
+            include_str!("../../template/axum/shared/core/mod.tera"),
         ),
         (
             "core/cache.rs",
-            include_str!("../../template/axum/internal/core/cache.tera"),
+            include_str!("../../template/axum/shared/core/cache.tera"),
         ),
         (
             "core/config.rs",
-            include_str!("../../template/axum/internal/core/config.tera"),
+            include_str!("../../template/axum/shared/core/config.tera"),
         ),
         (
             "core/db.rs",
-            include_str!("../../template/axum/internal/core/db.tera"),
+            include_str!("../../template/axum/shared/core/db.tera"),
         ),
         (
             "core/logger.rs",
-            include_str!("../../template/axum/internal/core/logger.tera"),
+            include_str!("../../template/axum/shared/core/logger.tera"),
         ),
         // middleware
         (
             "middleware/mod.rs",
-            include_str!("../../template/axum/internal/middleware/mod.tera"),
+            include_str!("../../template/axum/shared/middleware/mod.tera"),
         ),
         (
             "middleware/catch_panic.rs",
-            include_str!("../../template/axum/internal/middleware/catch_panic.tera"),
+            include_str!("../../template/axum/shared/middleware/catch_panic.tera"),
         ),
         (
             "middleware/log.rs",
-            include_str!("../../template/axum/internal/middleware/log.tera"),
+            include_str!("../../template/axum/shared/middleware/log.tera"),
         ),
         (
             "middleware/trace.rs",
-            include_str!("../../template/axum/internal/middleware/trace.tera"),
+            include_str!("../../template/axum/shared/middleware/trace.tera"),
         ),
         // result
         (
             "result/mod.rs",
-            include_str!("../../template/axum/internal/result/mod.tera"),
+            include_str!("../../template/axum/shared/result/mod.tera"),
         ),
         (
             "result/code.rs",
-            include_str!("../../template/axum/internal/result/code.tera"),
+            include_str!("../../template/axum/shared/result/code.tera"),
         ),
         (
             "result/rejection.rs",
-            include_str!("../../template/axum/internal/result/rejection.tera"),
+            include_str!("../../template/axum/shared/result/rejection.tera"),
         ),
         (
             "result/reply.rs",
-            include_str!("../../template/axum/internal/result/reply.tera"),
+            include_str!("../../template/axum/shared/result/reply.tera"),
         ),
         // util
         (
             "util/mod.rs",
-            include_str!("../../template/axum/internal/util/mod.tera"),
+            include_str!("../../template/axum/shared/util/mod.tera"),
         ),
         (
             "util/helper.rs",
-            include_str!("../../template/axum/internal/util/helper.tera"),
+            include_str!("../../template/axum/shared/util/helper.tera"),
         ),
         (
             "util/identity.rs",
-            include_str!("../../template/axum/internal/util/identity.tera"),
+            include_str!("../../template/axum/shared/util/identity.tera"),
         ),
     ])
     .unwrap();
@@ -128,15 +128,6 @@ pub fn app() -> Tera {
     tera.add_raw_templates(vec![
         // main.rs
         ("main.rs", include_str!("../../template/axum/app/main.tera")),
-        // api
-        (
-            "api/mod.rs",
-            include_str!("../../template/axum/app/api/mod.tera"),
-        ),
-        (
-            "api/greeter.rs",
-            include_str!("../../template/axum/app/api/greeter.tera"),
-        ),
         // cmd
         (
             "cmd/mod.rs",
@@ -149,6 +140,15 @@ pub fn app() -> Tera {
         (
             "cmd/serve.rs",
             include_str!("../../template/axum/app/cmd/serve.tera"),
+        ),
+        // handler
+        (
+            "handler/mod.rs",
+            include_str!("../../template/axum/app/handler/mod.tera"),
+        ),
+        (
+            "handler/greeter.rs",
+            include_str!("../../template/axum/app/handler/greeter.tera"),
         ),
         // middleware
         (

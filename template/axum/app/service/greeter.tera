@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use internal::result::{reply, ApiResult};
+use shared::result::{reply, ApiResult};
 
 #[derive(Debug, Validate, Deserialize, Serialize)]
 pub struct ReqHello {

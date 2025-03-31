@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use salvo::{async_trait, writing::Json, Depot, FlowCtrl, Handler, Request, Response};
 
-use internal::{result::code::Code, util::identity::Identity};
+use shared::{result::code::Code, util::identity::Identity};
 
 pub struct Auth;
 

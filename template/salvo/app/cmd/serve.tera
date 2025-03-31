@@ -1,6 +1,6 @@
 use salvo::prelude::*;
 
-use internal::core::config;
+use shared::core::config;
 
 use crate::router;
 
