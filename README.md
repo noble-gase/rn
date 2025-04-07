@@ -55,7 +55,6 @@ rnx new --name=demo # 创建demo项目
 ##### 多应用
 
 ```shell
-# http
 rnx new --app=foo --app=bar # 在当前目录初始化项目
 rnx new --name=demo --app=foo --app=bar # 创建demo项目
 .
@@ -154,7 +153,11 @@ rnx app --name=foo --name=bar
 ├── src
 │   ├── app
 │   │   ├── foo
-│   │   │   ├── ...
+│   │   │   ├── cmd
+│   │   │   ├── handler
+│   │   │   ├── middleware
+│   │   │   ├── router
+│   │   │   ├── service
 │   │   │   └── main.rs
 │   │   └── bar
 │   │       ├── ...
@@ -175,7 +178,11 @@ rnx app --name=foo --name=bar --axum
 ├── src
 │   ├── app
 │   │   ├── foo
-│   │   │   ├── ...
+│   │   │   ├── cmd
+│   │   │   ├── handler
+│   │   │   ├── middleware
+│   │   │   ├── router
+│   │   │   ├── service
 │   │   │   └── main.rs
 │   │   └── bar
 │   │       ├── ...
