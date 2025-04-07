@@ -25,11 +25,13 @@ cargo install rnx
 
 ## 创建项目
 
-#### 单应用
+### Salvo
+
+##### 单应用
 
 ```shell
-rnx new --name=demo # salvo
-rnx new --name=demo --axum # axum
+rnx new # 在当前目录初始化项目
+rnx new --name=demo # 创建demo项目
 .
 ├── src
 │   ├── app
@@ -50,12 +52,70 @@ rnx new --name=demo --axum # axum
 └── config.toml
 ```
 
-#### 多应用
+##### 多应用
 
 ```shell
 # http
-rnx new --name=demo --app=foo --app=bar # salvo
-rnx new --name=demo --app=foo --app=bar --axum # axum
+rnx new --app=foo --app=bar # 在当前目录初始化项目
+rnx new --name=demo --app=foo --app=bar # 创建demo项目
+.
+├── src
+│   ├── app
+│   │   ├── foo
+│   │   │   ├── cmd
+│   │   │   ├── handler
+│   │   │   ├── middleware
+│   │   │   ├── router
+│   │   │   ├── service
+│   │   │   └── main.rs
+│   │   └── bar
+│   │       ├── ...
+│   │       └── main.rs
+│   └── shared
+│       ├── core
+│       ├── middleware
+│       ├── result
+│       ├── util
+│       └── lib.rs
+├── Cargo.toml
+├── foo.dockerfile
+├── bar.dockerfile
+├── foo_config.toml
+└── bar_config.toml
+```
+
+### Axum
+
+##### 单应用
+
+```shell
+rnx new --axum # 在当前目录初始化项目
+rnx new --name=demo --axum # 创建demo项目
+.
+├── src
+│   ├── app
+│   │   ├── cmd
+│   │   ├── hanlder
+│   │   ├── middleware
+│   │   ├── router
+│   │   ├── service
+│   │   └── main.rs
+│   └── shared
+│       ├── core
+│       ├── middleware
+│       ├── result
+│       ├── util
+│       └── lib.rs
+├── Cargo.toml
+├── Dockerfile
+└── config.toml
+```
+
+##### 多应用
+
+```shell
+rnx new --app=foo --app=bar --axum # 在当前目录初始化项目
+rnx new --name=demo --app=foo --app=bar --axum # 创建demo项目
 .
 ├── src
 │   ├── app
@@ -86,9 +146,31 @@ rnx new --name=demo --app=foo --app=bar --axum # axum
 
 > 多应用项目适用，需在项目根目录执行（即：`Cargo.toml` 所在目录）
 
+### Salvo
+
 ```shell
-rnx app --name=foo --name=bar # 创建salvo应用
-rnx app --name=foo --name=bar --axum # 创建axum应用
+rnx app --name=foo --name=bar
+.
+├── src
+│   ├── app
+│   │   ├── foo
+│   │   │   ├── ...
+│   │   │   └── main.rs
+│   │   └── bar
+│   │       ├── ...
+│   │       └── main.rs
+│   └── shared
+├── Cargo.toml
+├── foo.dockerfile
+├── bar.dockerfile
+├── foo_config.toml
+└── bar_config.toml
+```
+
+### Axum
+
+```shell
+rnx app --name=foo --name=bar --axum
 .
 ├── src
 │   ├── app

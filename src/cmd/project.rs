@@ -2,19 +2,32 @@ use std::{env, fs};
 
 use crate::internal::{self, is_empty_dir};
 
-pub fn run(name: String, axum: bool, apps: Vec<String>) {
+pub fn run(name: Option<String>, axum: bool, apps: Vec<String>) {
     // 获取当前目录
-    let dir = env::current_dir().unwrap().canonicalize().unwrap();
-    // 项目跟目录
-    let root = dir.join(&name);
+    let cur_dir = env::current_dir().unwrap().canonicalize().unwrap();
 
-    // 判断目录是否为空
-    if !is_empty_dir(&root) {
-        println!("👿 目录({:?})不为空，请确认！", root);
-        return;
-    }
-    // 创建项目目录
-    fs::create_dir_all(root.clone()).unwrap();
+    let (root, name) = match name {
+        Some(v) => {
+            let root = cur_dir.join(&v);
+            // 判断目录是否为空
+            if !is_empty_dir(&root) {
+                println!("👿 目录({:?})不为空，请确认！", root);
+                return;
+            }
+            // 创建项目目录
+            fs::create_dir_all(root.clone()).unwrap();
+            (root, v)
+        }
+        None => {
+            // 判断当前目录是否存在Cargo.toml
+            if cur_dir.join("Cargo.toml").exists() {
+                println!("👿 当前目录({:?})已经存在Cargo.toml，请确认！", cur_dir);
+                return;
+            }
+            let v = cur_dir.file_name().unwrap().to_string_lossy().to_string();
+            (cur_dir, v)
+        }
+    };
 
     // 创建项目
     if axum {

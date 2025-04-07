@@ -14,7 +14,7 @@ pub struct Cli {
 pub enum Command {
     New {
         #[arg(short, long)]
-        name: String,
+        name: Option<String>,
         #[arg(short, long)]
         axum: bool,
         #[arg(short, long)]
