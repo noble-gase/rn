@@ -1,0 +1,22 @@
+pub mod rejection;
+
+use axum::{
+    response::{IntoResponse, Response},
+    Json,
+};
+use kr::reply::Reply;
+use kr::{define_error_codes, define_ok};
+use serde::Serialize;
+
+define_ok!(0, "OK");
+
+define_error_codes! {
+    ErrParams(10000, "参数错误"),
+    ErrAuth(20000, "未授权，请先登录"),
+    ErrPerm(30000, "权限不足"),
+    ErrEmpty(40000, "数据不存在"),
+    ErrSystem(50000, "系统异常"),
+    ErrData(60000, "数据异常"),
+}
+
+pub type ApiResult<T> = Result<OK<T>, Code<String>>;

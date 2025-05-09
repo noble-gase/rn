@@ -8,11 +8,11 @@ use axum::{
     response::{IntoResponse, Response},
 };
 
-use crate::result::code::Code;
+use crate::code::Code;
 
 pub async fn handle(request: Request, next: Next) -> Response {
     if let Ok(resp) = AssertUnwindSafe(next.run(request)).catch_unwind().await {
         return resp;
     }
-    Code::ErrSystem(None).into_response()
+    Code::ErrSystem::<&str>.into_response()
 }

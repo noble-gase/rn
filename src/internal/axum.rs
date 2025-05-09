@@ -87,22 +87,14 @@ pub fn shared() -> Tera {
             "middleware/trace.rs",
             include_str!("../../template/axum/shared/middleware/trace.tera"),
         ),
-        // result
+        // code
         (
-            "result/mod.rs",
-            include_str!("../../template/axum/shared/result/mod.tera"),
+            "code/mod.rs",
+            include_str!("../../template/axum/shared/code/mod.tera"),
         ),
         (
-            "result/code.rs",
-            include_str!("../../template/axum/shared/result/code.tera"),
-        ),
-        (
-            "result/rejection.rs",
-            include_str!("../../template/axum/shared/result/rejection.tera"),
-        ),
-        (
-            "result/reply.rs",
-            include_str!("../../template/axum/shared/result/reply.tera"),
+            "code/rejection.rs",
+            include_str!("../../template/axum/shared/code/rejection.tera"),
         ),
         // util
         (
