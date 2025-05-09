@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use shared::result::{reply, ApiResult};
+use shared::code::{ApiResult, OK};
 
 #[derive(Debug, Validate, Deserialize, Serialize)]
 pub struct ReqHello {
@@ -18,5 +18,5 @@ pub async fn hello(req: ReqHello) -> ApiResult<RespHello> {
     let resp = RespHello {
         message: format!("Hello, {}!", req.name),
     };
-    Ok(reply::OK(Some(resp)))
+    Ok(OK(Some(resp)))
 }

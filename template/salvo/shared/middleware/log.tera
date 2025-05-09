@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use http_body_util::BodyExt;
 use hyper::HeaderMap;
+use kr::times;
 use salvo::{
     async_trait,
     http::{ReqBody, ResBody},
@@ -9,9 +10,8 @@ use salvo::{
     Depot, FlowCtrl, Handler, Request, Response,
 };
 use serde_json::Value;
-use kr::times;
 
-use crate::result::code::Code;
+use crate::code::Code;
 
 const MAX_BODY_LOG_SIZE: u64 = 20 << 10; // 20KB
 
@@ -87,14 +87,14 @@ fn header_to_string(h: &HeaderMap) -> String {
     serde_json::to_string(&map).unwrap_or_else(|_| String::from("<none>"))
 }
 
-async fn drain_req_body(req: &mut Request) -> ((Option<String>, u64), Option<Code>) {
+async fn drain_req_body(req: &mut Request) -> ((Option<String>, u64), Option<Code<&str>>) {
     // 取出body
     let body = req.take_body();
     let bytes = match body.collect().await {
         Ok(v) => v.to_bytes(),
         Err(e) => {
             tracing::error!(err = ?e, "[req] body.collect");
-            return ((None, 0), Some(Code::ErrSystem(None)));
+            return ((None, 0), Some(Code::ErrSystem));
         }
     };
     // 判断大小并处理JSON

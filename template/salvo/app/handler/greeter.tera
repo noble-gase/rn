@@ -1,7 +1,7 @@
 use salvo::{handler, Request};
 use validator::Validate;
 
-use shared::result::{code::Code, ApiResult};
+use shared::code::{ApiResult, Code};
 
 use crate::service::{
     self,
@@ -12,10 +12,10 @@ use crate::service::{
 pub async fn hello(req: &mut Request) -> ApiResult<RespHello> {
     let params = req.parse_json::<ReqHello>().await.map_err(|e| {
         tracing::error!(err = ?e, "req.parse_json");
-        Code::ErrParams(Some("参数解析出错".to_string()))
+        Code::ErrParams.wrap("参数解析出错".to_string())
     })?;
     if let Err(e) = params.validate() {
-        return Err(Code::ErrParams(Some(e.to_string())));
+        return Err(Code::ErrParams.wrap(e.to_string()));
     }
 
     // let empty = Identity::empty();

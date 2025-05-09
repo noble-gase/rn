@@ -6,7 +6,7 @@ use shared;
 
 pub fn init() -> Router {
     // cors
-    let cors = Cors::very_permissive()
+    let cors = Cors::permissive()
         .expose_headers(vec![shared::middleware::trace::TRACE_ID])
         .into_handler();
     // 路由组册

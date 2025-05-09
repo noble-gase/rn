@@ -93,18 +93,10 @@ pub fn shared() -> Tera {
             "middleware/trace.rs",
             include_str!("../../template/salvo/shared/middleware/trace.tera"),
         ),
-        // result
+        // code
         (
-            "result/mod.rs",
-            include_str!("../../template/salvo/shared/result/mod.tera"),
-        ),
-        (
-            "result/code.rs",
-            include_str!("../../template/salvo/shared/result/code.tera"),
-        ),
-        (
-            "result/reply.rs",
-            include_str!("../../template/salvo/shared/result/reply.tera"),
+            "code/mod.rs",
+            include_str!("../../template/salvo/shared/code/mod.tera"),
         ),
         // util
         (
