@@ -59,10 +59,6 @@ pub fn shared() -> Tera {
             include_str!("../../template/axum/shared/core/cache.tera"),
         ),
         (
-            "core/config.rs",
-            include_str!("../../template/axum/shared/core/config.tera"),
-        ),
-        (
             "core/db.rs",
             include_str!("../../template/axum/shared/core/db.tera"),
         ),

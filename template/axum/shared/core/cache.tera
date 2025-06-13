@@ -1,98 +1,73 @@
-use config::Config;
 use std::{sync::OnceLock, time::Duration};
-use kr::manager::async_redis;
 
-pub type RedisPool = r2d2::Pool<redis::Client>;
-pub type RedisAsyncPool = bb8::Pool<async_redis::AsyncConnManager>;
-pub type RedisClusterPool = r2d2::Pool<redis::cluster::ClusterClient>;
-pub type RedisClusterAsyncPool = bb8::Pool<async_redis::ClusterAsyncConnManager>;
+use kr::manager::{bb8_redis, bb8_redis_cluster};
+
+use crate::core::config;
+
+pub type RedisPool = bb8::Pool<bb8_redis::RedisConnectionManager>;
+pub type RedisClusterPool = bb8::Pool<bb8_redis_cluster::RedisConnectionManager>;
 
 static REDIS_POOL: OnceLock<RedisPool> = OnceLock::new();
-static REDIS_ASYNC_POOL: OnceLock<RedisAsyncPool> = OnceLock::new();
 static REDIS_CLUSTER_POOL: OnceLock<RedisClusterPool> = OnceLock::new();
-static REDIS_CLUSTER_ASYNC_POOL: OnceLock<RedisClusterAsyncPool> = OnceLock::new();
 
-pub async fn init_redis(cfg: &Config) {
-    let (pool, async_pool) = new_redis(cfg, "redis")
+pub async fn init() {
+    let pool = new_redis("redis")
         .await
         .unwrap_or_else(|e| panic!("Redis连接失败: {}", e));
     let _ = REDIS_POOL.set(pool);
-    let _ = REDIS_ASYNC_POOL.set(async_pool);
+
+    // cluster
+    // let cluster_pool = new_redis_cluster("redis-cluster")
+    //     .await
+    //     .unwrap_or_else(|e| panic!("Redis集群连接失败: {}", e));
+    // let _ = REDIS_CLUSTER_POOL.set(cluster_pool);
 }
 
-pub fn redis_pool() -> &'static RedisPool {
+pub fn pool() -> &'static RedisPool {
     REDIS_POOL
         .get()
         .unwrap_or_else(|| panic!("Redis连接池未初始化"))
 }
 
-pub async fn init_redis_cluster(cfg: &Config) {
-    let (pool, async_pool) = new_redis_cluster(cfg, "redis-cluster")
-        .await
-        .unwrap_or_else(|e| panic!("Redis集群连接失败: {}", e));
-    let _ = REDIS_CLUSTER_POOL.set(pool);
-    let _ = REDIS_CLUSTER_ASYNC_POOL.set(async_pool);
-}
-
-pub fn redis_async_pool() -> &'static RedisAsyncPool {
-    REDIS_ASYNC_POOL
-        .get()
-        .unwrap_or_else(|| panic!("Redis异步连接池未初始化"))
-}
-
-pub fn redis_cluster_pool() -> &'static RedisClusterPool {
+pub fn cluster_pool() -> &'static RedisClusterPool {
     REDIS_CLUSTER_POOL
         .get()
         .unwrap_or_else(|| panic!("Redis集群连接池未初始化"))
 }
 
-pub fn redis_cluster_async_pool() -> &'static RedisClusterAsyncPool {
-    REDIS_CLUSTER_ASYNC_POOL
-        .get()
-        .unwrap_or_else(|| panic!("Redis集群异步连接池未初始化"))
-}
+async fn new_redis(cfg_key: &str) -> anyhow::Result<RedisPool> {
+    let cfg = config();
 
-pub async fn new_redis(cfg: &Config, key: &str) -> anyhow::Result<(RedisPool, RedisAsyncPool)> {
-    let client = redis::Client::open(cfg.get_string(&format!("{}.dsn", key))?)?;
+    let client = redis::Client::open(cfg.get_string(&format!("{}.dsn", cfg_key))?)?;
     let mut conn = client.get_connection()?;
     let _ = redis::cmd("PING").query::<String>(&mut conn)?;
 
     let max_size = cfg
-        .get_int(&format!("{}.options.max_size", key))
+        .get_int(&format!("{}.options.max_size", cfg_key))
         .unwrap_or(20);
     let min_idle = cfg.get_int("{}.options.min_idle").unwrap_or(10);
     let conn_timeout = cfg.get_int("{}.options.conn_timeout").unwrap_or(10);
     let idle_timeout = cfg.get_int("{}.options.idle_timeout").unwrap_or(300);
     let max_lifetime = cfg.get_int("{}.options.max_lifetime").unwrap_or(600);
 
-    // 同步
-    let pool = r2d2::Pool::builder()
+    let pool = bb8::Pool::builder()
         .max_size(max_size as u32)
         .min_idle(Some(min_idle as u32))
         .connection_timeout(Duration::from_secs(conn_timeout as u64))
         .idle_timeout(Some(Duration::from_secs(idle_timeout as u64)))
         .max_lifetime(Some(Duration::from_secs(max_lifetime as u64)))
-        .build(client.clone())?;
-
-    // 异步
-    let async_pool = bb8::Pool::builder()
-        .max_size(max_size as u32)
-        .min_idle(Some(min_idle as u32))
-        .connection_timeout(Duration::from_secs(conn_timeout as u64))
-        .idle_timeout(Some(Duration::from_secs(idle_timeout as u64)))
-        .max_lifetime(Some(Duration::from_secs(max_lifetime as u64)))
-        .build(async_redis::AsyncConnManager::new(client))
+        .build(bb8_redis::RedisConnectionManager::new(client))
         .await?;
 
-    Ok((pool, async_pool))
+    Ok(pool)
 }
 
-pub async fn new_redis_cluster(
-    cfg: &Config,
-    key: &str,
-) -> anyhow::Result<(RedisClusterPool, RedisClusterAsyncPool)> {
+#[allow(unused)]
+async fn new_redis_cluster(cfg_key: &str) -> anyhow::Result<RedisClusterPool> {
+    let cfg = config();
+
     let nodes = cfg
-        .get_array(&format!("{}.nodes", key))?
+        .get_array(&format!("{}.nodes", cfg_key))?
         .into_iter()
         .map(|v| v.to_string())
         .collect::<Vec<String>>();
@@ -101,31 +76,21 @@ pub async fn new_redis_cluster(
     let _ = redis::cmd("PING").query::<String>(&mut conn)?;
 
     let max_size = cfg
-        .get_int(&format!("{}.options.max_size", key))
+        .get_int(&format!("{}.options.max_size", cfg_key))
         .unwrap_or(20);
     let min_idle = cfg.get_int("{}.options.min_idle").unwrap_or(10);
     let conn_timeout = cfg.get_int("{}.options.conn_timeout").unwrap_or(10);
     let idle_timeout = cfg.get_int("{}.options.idle_timeout").unwrap_or(300);
     let max_lifetime = cfg.get_int("{}.options.max_lifetime").unwrap_or(600);
 
-    // 同步
-    let pool = r2d2::Pool::builder()
+    let pool = bb8::Pool::builder()
         .max_size(max_size as u32)
         .min_idle(Some(min_idle as u32))
         .connection_timeout(Duration::from_secs(conn_timeout as u64))
         .idle_timeout(Some(Duration::from_secs(idle_timeout as u64)))
         .max_lifetime(Some(Duration::from_secs(max_lifetime as u64)))
-        .build(client.clone())?;
-
-    // 异步
-    let async_pool = bb8::Pool::builder()
-        .max_size(max_size as u32)
-        .min_idle(Some(min_idle as u32))
-        .connection_timeout(Duration::from_secs(conn_timeout as u64))
-        .idle_timeout(Some(Duration::from_secs(idle_timeout as u64)))
-        .max_lifetime(Some(Duration::from_secs(max_lifetime as u64)))
-        .build(async_redis::ClusterAsyncConnManager::new(client))
+        .build(bb8_redis_cluster::RedisConnectionManager::new(client))
         .await?;
 
-    Ok((pool, async_pool))
+    Ok(pool)
 }

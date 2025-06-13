@@ -53,7 +53,7 @@ impl Identity {
             }
             Ok(v) => v,
         };
-        let secret = match config::global().get_string("app.secret") {
+        let secret = match config().get_string("app.secret") {
             Err(e) => {
                 tracing::error!(err = ?e, "missing config(app.secret)");
                 return Identity::empty();
@@ -76,7 +76,7 @@ impl Identity {
     }
 
     pub fn to_auth_token(&self) -> Result<String> {
-        let secret = config::global().get_string("app.secret")?;
+        let secret = config().get_string("app.secret")?;
         let key = secret.as_bytes();
 
         let plain = serde_json::to_vec(self)?;

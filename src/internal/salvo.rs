@@ -65,10 +65,6 @@ pub fn shared() -> Tera {
             include_str!("../../template/salvo/shared/core/cache.tera"),
         ),
         (
-            "core/config.rs",
-            include_str!("../../template/salvo/shared/core/config.tera"),
-        ),
-        (
             "core/db.rs",
             include_str!("../../template/salvo/shared/core/db.tera"),
         ),

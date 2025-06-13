@@ -1,10 +1,10 @@
 use shared::core::config;
+use tokio::signal::unix::{signal, SignalKind};
 
 use crate::router;
 
 pub async fn run() {
-    // run it with hyper on localhost:8000
-    let addr = config::global().get_int("app.port").unwrap_or(8000);
+    let addr = config().get_int("app.port").unwrap_or(8000);
 
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", addr))
         .await
@@ -12,5 +12,31 @@ pub async fn run() {
 
     tracing::info!("listening on {}", addr);
 
-    axum::serve(listener, router::route::init()).await.unwrap();
+    axum::serve(listener, router::route::init())
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
+}
+
+async fn shutdown_signal() {
+    let mut sigint = signal(SignalKind::interrupt()).unwrap();
+    let mut sighup = signal(SignalKind::hangup()).unwrap();
+    let mut sigquit = signal(SignalKind::quit()).unwrap();
+    let mut sigterm = signal(SignalKind::terminate()).unwrap();
+
+    tokio::select! {
+        _ = sigint.recv() => {
+            println!("收到 SIGINT 信号，正在关闭服务器...");
+        }
+        _ = sighup.recv() => {
+            println!("收到 SIGHUP 信号，正在关闭服务器...");
+
+        }
+        _ = sigquit.recv() => {
+            println!("收到 SIGQUIT 信号，正在关闭服务器...");
+        }
+        _ = sigterm.recv() => {
+            println!("收到 SIGTERM 信号，正在关闭服务器...");
+        }
+    }
 }

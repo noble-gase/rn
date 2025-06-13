@@ -1,12 +1,13 @@
 use std::{sync::OnceLock, time::Duration};
 
-use config::Config;
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
+
+use crate::core::config;
 
 static DB: OnceLock<MySqlPool> = OnceLock::new();
 
-pub async fn init(cfg: &Config) {
-    let pool = new(cfg, "db")
+pub async fn init() {
+    let pool = new("db")
         .await
         .unwrap_or_else(|e| panic!("数据库连接失败：{}", e));
     let _ = DB.set(pool);
@@ -16,23 +17,31 @@ pub fn pool() -> &'static MySqlPool {
     DB.get().unwrap_or_else(|| panic!("数据库连接未初始化"))
 }
 
-async fn new(cfg: &Config, key: &str) -> anyhow::Result<MySqlPool> {
-    let dsn = cfg.get_string(&format!("{}.dsn", key))?;
+pub async fn close() {
+    if let Some(pool) = DB.get() {
+        pool.close().await;
+    }
+}
+
+async fn new(cfg_key: &str) -> anyhow::Result<MySqlPool> {
+    let cfg = config();
+
+    let dsn = cfg.get_string(&format!("{}.dsn", cfg_key))?;
 
     let min_conns = cfg
-        .get_int(&format!("{}.options.min_conns", key))
+        .get_int(&format!("{}.options.min_conns", cfg_key))
         .unwrap_or(10);
     let max_conns = cfg
-        .get_int(&format!("{}.options.max_conns", key))
+        .get_int(&format!("{}.options.max_conns", cfg_key))
         .unwrap_or(20);
     let conn_timeout = cfg
-        .get_int(&format!("{}.options.conn_timeout", key))
+        .get_int(&format!("{}.options.conn_timeout", cfg_key))
         .unwrap_or(10);
     let idle_timeout = cfg
-        .get_int(&format!("{}.options.idle_timeout", key))
+        .get_int(&format!("{}.options.idle_timeout", cfg_key))
         .unwrap_or(300);
     let max_lifetime = cfg
-        .get_int(&format!("{}.options.max_lifetime", key))
+        .get_int(&format!("{}.options.max_lifetime", cfg_key))
         .unwrap_or(600);
 
     let pool = MySqlPoolOptions::new()
