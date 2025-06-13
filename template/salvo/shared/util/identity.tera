@@ -61,7 +61,7 @@ impl Identity {
             Ok(v) => v,
         };
         let key = secret.as_bytes();
-        let plain = match CBC(key, &key[..16]).decrypt(&cipher) {
+        let plain = match CBC::new(key, &key[..16]).decrypt(&cipher) {
             Err(e) => {
                 tracing::error!(err = ?e, "invalid auth_token");
                 return Identity::empty();
@@ -80,7 +80,7 @@ impl Identity {
         let key = secret.as_bytes();
 
         let plain = serde_json::to_vec(self)?;
-        let cipher = CBC(key, &key[..16]).encrypt(&plain, None)?;
+        let cipher = CBC::new(key, &key[..16]).encrypt(&plain, None)?;
 
         Ok(BASE64_STANDARD.encode(cipher))
     }

@@ -40,7 +40,7 @@ r2d2 = "0.8"
 bb8 = "0.9"
 nanoid = "0.4"
 validator = { version = "0.16", features = ["derive"] }
-kr = { version = "0.1", features = ["axum"] }
+kr = { version = "0.2", features = ["axum"] }
 hyper = "1.0"
 http = "1.0"
 http-body = "1.0"
@@ -48,11 +48,11 @@ http-body-util = "0.1"
 tower-http = { version = "0.6", features = ["cors"] }
 axum = { version = "0.8", features = ["macros", "http2"] }
 axum-extra = "0.10"
-sea-orm = { version = "1.1", features = [
-    "sqlx-mysql",
+sqlx = { version = "0.8", features = [
     "runtime-tokio-rustls",
+    "mysql",
+    "time",
     "macros",
-    "debug-print",
 ] }
 redis = { version = "0.27", features = [
     "r2d2",

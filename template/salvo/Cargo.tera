@@ -40,7 +40,7 @@ bb8 = "0.9"
 multimap = "0.10"
 nanoid = "0.4"
 validator = { version = "0.16", features = ["derive"] }
-kr = { version = "0.1", features = ["salvo"] }
+kr = { version = "0.2", features = ["salvo"] }
 hyper = "1.0"
 http = "1.0"
 http-body = "1.0"
@@ -51,11 +51,11 @@ salvo = { version = "0.75", features = [
     "http2",
     "http2-cleartext",
 ] }
-sea-orm = { version = "1.1", features = [
-    "sqlx-mysql",
+sqlx = { version = "0.8", features = [
     "runtime-tokio-rustls",
+    "mysql",
+    "time",
     "macros",
-    "debug-print",
 ] }
 redis = { version = "0.27", features = [
     "r2d2",
