@@ -13,7 +13,7 @@ cargo install rnx
 
 ## 特点
 
-- ORM使用 [sea-orm](https://github.com/SeaQL/sea-orm)
+- DB使用 [sqlx](https://github.com/launchbadge/sqlx)
 - Redis使用 [redis-rs](https://github.com/redis-rs/redis-rs)
 - 日志使用 [tracing](https://github.com/tokio-rs/tracing)
 - 配置使用 [config-rs](https://github.com/mehcode/config-rs)
