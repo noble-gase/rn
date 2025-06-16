@@ -30,7 +30,6 @@ async fn shutdown_signal() {
         }
         _ = sighup.recv() => {
             println!("收到 SIGHUP 信号，正在关闭服务器...");
-
         }
         _ = sigquit.recv() => {
             println!("收到 SIGQUIT 信号，正在关闭服务器...");

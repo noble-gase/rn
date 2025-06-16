@@ -29,7 +29,7 @@ pub fn query_page(args: &HashMap<String, String>) -> (u64, u64) {
     (offset, limit)
 }
 
-pub fn new_validation_err(s: String) -> ValidationError {
+pub fn new_validate_err(s: String) -> ValidationError {
     ValidationError {
         code: Cow::from(""),
         message: Some(Cow::from(s)),
