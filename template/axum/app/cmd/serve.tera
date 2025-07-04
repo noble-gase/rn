@@ -26,16 +26,16 @@ async fn shutdown_signal() {
 
     tokio::select! {
         _ = sigint.recv() => {
-            println!("收到 SIGINT 信号，正在关闭服务器...");
+            println!("收到 SIGINT 信号，正在关闭服务...");
         }
         _ = sighup.recv() => {
-            println!("收到 SIGHUP 信号，正在关闭服务器...");
+            println!("收到 SIGHUP 信号，正在关闭服务...");
         }
         _ = sigquit.recv() => {
-            println!("收到 SIGQUIT 信号，正在关闭服务器...");
+            println!("收到 SIGQUIT 信号，正在关闭服务...");
         }
         _ = sigterm.recv() => {
-            println!("收到 SIGTERM 信号，正在关闭服务器...");
+            println!("收到 SIGTERM 信号，正在关闭服务...");
         }
     }
 }
