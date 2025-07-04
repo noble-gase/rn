@@ -1,22 +1,16 @@
 pub mod route;
 
+use prometheus::{Encoder, TextEncoder};
 use salvo::{cors::Cors, handler, Router};
 
 use shared;
 
 pub fn init() -> Router {
-    // cors
-    let cors = Cors::permissive()
-        .expose_headers(vec![shared::middleware::trace::TRACE_ID])
-        .into_handler();
-    // 路由组册
     Router::new()
         .get(root)
-        .hoop(cors)
-        .hoop(shared::middleware::trace::Trace)
-        .hoop(shared::middleware::catch_panic::CatchPanic)
-        .hoop(shared::middleware::log::Log)
-        .push(v1())
+        .push(Router::with_path("health").get(health))
+        .push(Router::with_path("metrics").get(metrics))
+        .push(router())
 }
 
 #[handler]
@@ -24,9 +18,33 @@ async fn root() -> &'static str {
     "☺ welcome to Rust app"
 }
 
-pub fn v1() -> Router {
-    // 开放
-    let open = Router::new().push(route::greeter());
-    // v1
-    Router::with_path("v1").push(open)
+#[handler]
+async fn health() -> &'static str {
+    "ok"
 }
+
+#[handler]
+async fn metrics() -> String {
+    let encoder = TextEncoder::new();
+    let metric_families = prometheus::gather();
+
+    let mut buffer = Vec::new();
+    encoder.encode(&metric_families, &mut buffer).unwrap();
+
+    String::from_utf8(buffer).unwrap()
+}
+
+pub fn router() -> Router {
+    let cors = Cors::permissive()
+        .expose_headers(vec![shared::middleware::trace::TRACE_ID])
+        .into_handler();
+
+    Router::new()
+        .hoop(cors)
+        .hoop(shared::middleware::monitor::Monitor)
+        .hoop(shared::middleware::trace::Trace)
+        .hoop(shared::middleware::log::Log)
+        .hoop(shared::middleware::recover::Recover)
+        .push(route::v1())
+}
+

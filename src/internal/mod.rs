@@ -160,7 +160,7 @@ fn build_app(
             }
             AppMode::Multi => {
                 ctx.insert("dockerfile", format!("{}.dockerfile", &app.name).as_str());
-                ctx.insert("cfgfile", format!("{}_config.toml", &app.name).as_str());
+                ctx.insert("cfgfile", format!("{}.config.toml", &app.name).as_str());
                 (
                     src_dir.join("app").join(&app.name),
                     format!("app/{}", &app.name),
@@ -209,7 +209,7 @@ fn build_app(
             let content = tera_other.render(filename, &ctx).unwrap();
             let path = match mode {
                 AppMode::Single => root.join(filename),
-                AppMode::Multi => root.join(format!("{}_{}", &app.name, filename).as_str()),
+                AppMode::Multi => root.join(format!("{}.{}", &app.name, filename).as_str()),
             };
             // 创建文件
             let mut file = File::create(path).unwrap();

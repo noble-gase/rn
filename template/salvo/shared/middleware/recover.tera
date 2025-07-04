@@ -5,23 +5,23 @@ use salvo::{async_trait, writing::Json, Depot, FlowCtrl, Handler, Request, Respo
 
 use crate::code::Code;
 
-pub struct CatchPanic;
+pub struct Recover;
 
-impl CatchPanic {
+impl Recover {
     #[inline]
     pub fn new() -> Self {
-        CatchPanic {}
+        Recover {}
     }
 }
 
-impl Default for CatchPanic {
+impl Default for Recover {
     fn default() -> Self {
         Self::new()
     }
 }
 
 #[async_trait]
-impl Handler for CatchPanic {
+impl Handler for Recover {
     async fn handle(
         &self,
         req: &mut Request,

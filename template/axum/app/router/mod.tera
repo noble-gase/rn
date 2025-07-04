@@ -1,1 +1,43 @@
 pub mod route;
+
+use axum::{routing::get, Router};
+use prometheus::{Encoder, TextEncoder};
+use tower_http::cors::CorsLayer;
+
+pub fn init() -> Router {
+    // 路由组册
+    Router::new()
+        .route("/", get(|| async { "☺ welcome to Rust app" }))
+        .route("/health", get(health))
+        .route("/metrics", get(metrics))
+        .merge(router())
+}
+
+async fn health() -> &'static str {
+    "ok"
+}
+
+async fn metrics() -> String {
+    let encoder = TextEncoder::new();
+    let metric_families = prometheus::gather();
+
+    let mut buffer = Vec::new();
+    encoder.encode(&metric_families, &mut buffer).unwrap();
+
+    String::from_utf8(buffer).unwrap()
+}
+
+fn router() -> Router {
+    Router::new()
+        .nest("/v1", route::v1())
+        .layer(axum::middleware::from_fn(
+            shared::middleware::recover::handle,
+        ))
+        .layer(axum::middleware::from_fn(shared::middleware::log::handle))
+        .layer(axum::middleware::from_fn(shared::middleware::trace::handle))
+        .layer(axum::middleware::from_fn(
+            shared::middleware::monitor::handle,
+        ))
+        .layer(CorsLayer::permissive().expose_headers(vec![shared::middleware::trace::TRACE_ID]))
+}
+

@@ -36,8 +36,8 @@ time = { version = "0.3", features = [
     "parsing",
 ] }
 bb8 = "0.9"
-multimap = "0.10"
 nanoid = "0.4"
+prometheus = "0.14"
 validator = { version = "0.16", features = ["derive"] }
 kr = { version = "0.2", features = ["salvo"] }
 hyper = "1.0"

@@ -43,5 +43,4 @@ async fn shutdown_signal(handle: ServerHandle) {
     }
 
     handle.stop_graceful(Duration::from_secs(30));
-    println!("服务器已停止");
 }

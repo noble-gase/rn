@@ -78,12 +78,16 @@ pub fn shared() -> Tera {
             include_str!("../../template/salvo/shared/middleware/mod.tera"),
         ),
         (
-            "middleware/catch_panic.rs",
-            include_str!("../../template/salvo/shared/middleware/catch_panic.tera"),
-        ),
-        (
             "middleware/log.rs",
             include_str!("../../template/salvo/shared/middleware/log.tera"),
+        ),
+        (
+            "middleware/monitor.rs",
+            include_str!("../../template/salvo/shared/middleware/monitor.tera"),
+        ),
+        (
+            "middleware/recover.rs",
+            include_str!("../../template/salvo/shared/middleware/recover.tera"),
         ),
         (
             "middleware/trace.rs",

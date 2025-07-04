@@ -14,7 +14,7 @@ pub async fn init() {
 }
 
 pub fn pool() -> &'static MySqlPool {
-    DB.get().unwrap_or_else(|| panic!("数据库连接未初始化"))
+    DB.get().expect("数据库连接未初始化")
 }
 
 pub async fn close() {

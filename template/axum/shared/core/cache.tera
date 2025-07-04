@@ -8,7 +8,7 @@ pub type RedisPool = bb8::Pool<bb8_redis::RedisConnectionManager>;
 pub type RedisClusterPool = bb8::Pool<bb8_redis_cluster::RedisConnectionManager>;
 
 static REDIS_POOL: OnceLock<RedisPool> = OnceLock::new();
-static REDIS_CLUSTER_POOL: OnceLock<RedisClusterPool> = OnceLock::new();
+// static REDIS_CLUSTER_POOL: OnceLock<RedisClusterPool> = OnceLock::new();
 
 pub async fn init() {
     let pool = new_redis("redis")
@@ -24,16 +24,12 @@ pub async fn init() {
 }
 
 pub fn pool() -> &'static RedisPool {
-    REDIS_POOL
-        .get()
-        .unwrap_or_else(|| panic!("Redis连接池未初始化"))
+    REDIS_POOL.get().expect("Redis连接池未初始化")
 }
 
-pub fn cluster_pool() -> &'static RedisClusterPool {
-    REDIS_CLUSTER_POOL
-        .get()
-        .unwrap_or_else(|| panic!("Redis集群连接池未初始化"))
-}
+// pub fn cluster_pool() -> &'static RedisClusterPool {
+//     REDIS_CLUSTER_POOL.get().expect("Redis集群连接池未初始化")
+// }
 
 async fn new_redis(cfg_key: &str) -> anyhow::Result<RedisPool> {
     let cfg = config();

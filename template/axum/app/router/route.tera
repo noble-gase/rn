@@ -1,23 +1,7 @@
-use axum::{
-    routing::{get, post},
-    Router,
-};
-use tower_http::cors::CorsLayer;
+use axum::{routing::post, Router};
 
 use crate::handler::greeter;
 
-pub fn init() -> Router {
-    // 开放
-    let open = Router::new().route("/greeter", post(greeter::hello));
-
-    // 路由组册
-    Router::new()
-        .route("/", get(|| async { "☺ welcome to Rust app" }))
-        .nest("/v1", open)
-        .layer(axum::middleware::from_fn(shared::middleware::log::handle))
-        .layer(CorsLayer::permissive().expose_headers(vec![shared::middleware::trace::TRACE_ID]))
-        .layer(axum::middleware::from_fn(
-            shared::middleware::catch_panic::handle,
-        ))
-        .layer(axum::middleware::from_fn(shared::middleware::trace::handle))
+pub fn v1() -> Router {
+    Router::new().route("/greeter", post(greeter::hello))
 }

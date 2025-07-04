@@ -12,7 +12,7 @@ pub async fn run() {
 
     tracing::info!("listening on {}", addr);
 
-    axum::serve(listener, router::route::init())
+    axum::serve(listener, router::init())
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();

@@ -1,0 +1,68 @@
+use std::{sync::LazyLock, time::Instant};
+
+use prometheus::{register_counter_vec, register_histogram_vec, CounterVec, HistogramVec};
+use salvo::{async_trait, Depot, FlowCtrl, Handler, Request, Response};
+
+/// 请求数量
+static REQUEST_COUNTER: LazyLock<CounterVec> = LazyLock::new(|| {
+    register_counter_vec!(
+        "requests_count",
+        "HTTP total requests",
+        &["method", "path", "status"]
+    )
+    .unwrap()
+});
+
+/// 请求耗时
+static REQUEST_DURATION: LazyLock<HistogramVec> = LazyLock::new(|| {
+    register_histogram_vec!(
+        "request_duration",
+        "HTTP request duration (ms)",
+        &["method", "path", "status"],
+        vec![5.0, 10.0, 25.0, 50.0, 100.0, 250.0, 500.0, 1000.0, 2500.0, 5000.0, 10000.0]
+    )
+    .unwrap()
+});
+
+pub struct Monitor;
+
+impl Monitor {
+    #[inline]
+    pub fn new() -> Self {
+        Monitor {}
+    }
+}
+
+impl Default for Monitor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[async_trait]
+impl Handler for Monitor {
+    async fn handle(
+        &self,
+        req: &mut Request,
+        depot: &mut Depot,
+        resp: &mut Response,
+        ctrl: &mut FlowCtrl,
+    ) {
+        let enter_time = Instant::now();
+
+        let method = req.method().to_string();
+        let path = req.uri().path().to_string();
+
+        ctrl.call_next(req, depot, resp).await;
+
+        let duration = enter_time.elapsed();
+        let status = resp.status_code.unwrap_or_default().as_u16().to_string();
+
+        REQUEST_COUNTER
+            .with_label_values(&[&method, &path, &status])
+            .inc();
+        REQUEST_DURATION
+            .with_label_values(&[&method, &path, &status])
+            .observe(duration.as_millis() as f64);
+    }
+}
