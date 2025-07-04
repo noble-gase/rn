@@ -20,8 +20,9 @@ cargo install rnx
 - 命令行使用 [clap](https://github.com/clap-rs/clap)
 - 异步运行时使用 [tokio](https://github.com/tokio-rs/tokio)
 - 参数验证器使用 [validator](https://github.com/Keats/validator)
-- 包含 Trace、认证、请求日志、Panic捕获 中间价
-- 简单好用的 API Result 统一输出方式
+- 支持 Prometheus Metrics 和 Request 中间件
+- 包含 TraceId、认证、请求日志、Panic捕获 中间件
+- 简单好用的 API Result（宏定义错误码）统一输出方式
 
 ## 创建项目
 
