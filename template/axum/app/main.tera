@@ -23,10 +23,11 @@ async fn main() {
     }));
 
     init().await;
-    if let Some(v) = cli.command {
-        match v {
-            cmd::Command::Hello { name } => cmd::hello::run(name),
-            cmd::Command::Serve => cmd::serve::run().await,
+    match cli.command {
+        Some(cmd::Command::Hello { name }) => cmd::hello::run(name),
+        Some(cmd::Command::Serve) => cmd::serve::run().await,
+        _ => {
+            println!("欢迎使用noble-gase[Axum]脚手架");
         }
     }
     cleanup().await;
