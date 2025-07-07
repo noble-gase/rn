@@ -41,10 +41,10 @@ pub fn router() -> Router {
 
     Router::new()
         .hoop(cors)
-        .hoop(shared::middleware::monitor::Monitor)
+        .hoop(shared::middleware::metrics::Metrics)
         .hoop(shared::middleware::trace::Trace)
         .hoop(shared::middleware::log::Log)
-        .hoop(shared::middleware::recover::Recover)
+        .hoop(shared::middleware::panic::Catch)
         .push(route::v1())
 }
 

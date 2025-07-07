@@ -35,7 +35,6 @@ pub async fn handle(request: Request, next: Next) -> Response {
     let duration = start.elapsed();
     let status = response.status().as_u16().to_string();
 
-    // 打标签上报指标
     REQUEST_COUNTER
         .with_label_values(&[&method, &path, &status])
         .inc();

@@ -28,16 +28,14 @@ async fn metrics() -> String {
 }
 
 fn router() -> Router {
+    let cors = CorsLayer::permissive().expose_headers(vec![shared::middleware::trace::TRACE_ID]);
+
     Router::new()
         .nest("/v1", route::v1())
-        .layer(axum::middleware::from_fn(
-            shared::middleware::recover::handle,
-        ))
+        .layer(axum::middleware::from_fn(shared::middleware::panic::handle))
         .layer(axum::middleware::from_fn(shared::middleware::log::handle))
         .layer(axum::middleware::from_fn(shared::middleware::trace::handle))
-        .layer(axum::middleware::from_fn(
-            shared::middleware::monitor::handle,
-        ))
-        .layer(CorsLayer::permissive().expose_headers(vec![shared::middleware::trace::TRACE_ID]))
+        .layer(axum::middleware::from_fn(shared::middleware::metrics::handle))
+        .layer(cors)
 }
 

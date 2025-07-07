@@ -24,23 +24,23 @@ static REQUEST_DURATION: LazyLock<HistogramVec> = LazyLock::new(|| {
     .unwrap()
 });
 
-pub struct Monitor;
+pub struct Metrics;
 
-impl Monitor {
+impl Metrics {
     #[inline]
     pub fn new() -> Self {
-        Monitor {}
+        Metrics {}
     }
 }
 
-impl Default for Monitor {
+impl Default for Metrics {
     fn default() -> Self {
         Self::new()
     }
 }
 
 #[async_trait]
-impl Handler for Monitor {
+impl Handler for Metrics {
     async fn handle(
         &self,
         req: &mut Request,

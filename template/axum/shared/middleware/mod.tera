@@ -1,4 +1,4 @@
 pub mod log;
-pub mod monitor;
-pub mod recover;
+pub mod metrics;
+pub mod panic;
 pub mod trace;

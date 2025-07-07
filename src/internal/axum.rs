@@ -76,12 +76,12 @@ pub fn shared() -> Tera {
             include_str!("../../template/axum/shared/middleware/log.tera"),
         ),
         (
-            "middleware/monitor.rs",
-            include_str!("../../template/axum/shared/middleware/monitor.tera"),
+            "middleware/metrics.rs",
+            include_str!("../../template/axum/shared/middleware/metrics.tera"),
         ),
         (
-            "middleware/recover.rs",
-            include_str!("../../template/axum/shared/middleware/recover.tera"),
+            "middleware/panic.rs",
+            include_str!("../../template/axum/shared/middleware/panic.tera"),
         ),
         (
             "middleware/trace.rs",
