@@ -80,8 +80,8 @@ rnx new --name=demo --app=foo --app=bar # 创建demo项目
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
-├── foo_config.toml
-└── bar_config.toml
+├── foo.config.toml
+└── bar.config.toml
 ```
 
 ### Axum
@@ -138,8 +138,8 @@ rnx new --name=demo --app=foo --app=bar --axum # 创建demo项目
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
-├── foo_config.toml
-└── bar_config.toml
+├── foo.config.toml
+└── bar.config.toml
 ```
 
 ## 创建应用
@@ -167,8 +167,8 @@ rnx app --name=foo --name=bar
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
-├── foo_config.toml
-└── bar_config.toml
+├── foo.config.toml
+└── bar.config.toml
 ```
 
 ### Axum
@@ -192,8 +192,8 @@ rnx app --name=foo --name=bar --axum
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
-├── foo_config.toml
-└── bar_config.toml
+├── foo.config.toml
+└── bar.config.toml
 ```
 
 **Enjoy 😊**
