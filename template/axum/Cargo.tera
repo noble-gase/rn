@@ -38,7 +38,7 @@ time = { version = "0.3", features = [
 ] }
 bb8 = "0.9"
 nanoid = "0.4"
-prometheus = "0.14"
+prometheus = { version = "0.14", features = ["process"] }
 validator = { version = "0.16", features = ["derive"] }
 kr = { version = "0.2", features = ["axum"] }
 hyper = "1.0"
