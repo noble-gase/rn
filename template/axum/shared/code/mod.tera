@@ -4,7 +4,7 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use kr::reply::Reply;
+use kr::status::Reply;
 use kr::{define_error_codes, define_ok};
 use serde::Serialize;
 
@@ -19,4 +19,19 @@ define_error_codes! {
     ErrData(60000, "数据异常"),
 }
 
-pub type ApiResult<T> = Result<OK<T>, Code<String>>;
+impl<T> IntoResponse for OK<T>
+where
+    T: Serialize + Send,
+{
+    fn into_response(self) -> Response {
+        Json(self.to_reply()).into_response()
+    }
+}
+
+impl IntoResponse for Code {
+    fn into_response(self) -> Response {
+        Json(self.to_reply()).into_response()
+    }
+}
+
+pub type ApiResult<T> = Result<OK<T>, Code>;

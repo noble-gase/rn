@@ -1,4 +1,4 @@
-use kr::reply::Reply;
+use kr::status::Reply;
 use kr::{define_error_codes, define_ok};
 use salvo::{prelude::*, Depot, Request, Response, Writer};
 use serde::Serialize;
@@ -14,4 +14,24 @@ define_error_codes! {
     ErrData(60000, "数据异常"),
 }
 
-pub type ApiResult<T> = Result<OK<T>, Code<String>>;
+#[async_trait]
+impl<T> Writer for OK<T>
+where
+    T: Serialize + Send,
+{
+    async fn write(mut self, _req: &mut Request, _depot: &mut Depot, resp: &mut Response) {
+        resp.status_code(StatusCode::OK);
+        resp.render(Json(self.to_reply()));
+    }
+}
+
+#[async_trait]
+impl Writer for Code {
+    async fn write(mut self, _req: &mut Request, _depot: &mut Depot, resp: &mut Response) {
+        resp.status_code(StatusCode::OK);
+        resp.render(Json(self.to_reply()));
+    }
+}
+
+pub type ApiResult<T> = Result<OK<T>, Code>;
+

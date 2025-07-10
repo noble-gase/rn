@@ -34,7 +34,7 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
         .get(AUTHORIZATION)
         .and_then(|v| v.to_str().ok());
     let id = match token {
-        None => Identity::empty(),
+        None => Identity::default(),
         Some(v) => Identity::from_auth_token(v.to_string()),
     };
     let id_str = id.to_string();

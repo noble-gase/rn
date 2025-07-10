@@ -22,7 +22,7 @@
 ```shell
 {%- if mode == "Multi" %}
 # 配置文件
-<app>_config.toml
+<app>.config.toml
 
 # 启动服务
 cargo run --bin=<app> serve

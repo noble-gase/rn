@@ -14,5 +14,5 @@ pub async fn handle(request: Request, next: Next) -> Response {
     if let Ok(resp) = AssertUnwindSafe(next.run(request)).catch_unwind().await {
         return resp;
     }
-    Code::ErrSystem::<&str>.into_response()
+    Code::ErrSystem.into_response()
 }

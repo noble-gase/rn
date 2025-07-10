@@ -33,30 +33,21 @@ impl Identity {
         }
     }
 
-    pub fn empty() -> Self {
-        Identity {
-            i: 0,
-            r: 0,
-            t: String::from(""),
-            x: 0,
-        }
-    }
-
     pub fn from_auth_token(token: String) -> Self {
         if token.is_empty() {
-            return Identity::empty();
+            return Identity::default();
         }
         let cipher = match BASE64_STANDARD.decode(token) {
             Err(e) => {
                 tracing::error!(err = ?e, "invalid auth_token");
-                return Identity::empty();
+                return Identity::default();
             }
             Ok(v) => v,
         };
         let secret = match config().get_string("app.secret") {
             Err(e) => {
                 tracing::error!(err = ?e, "missing config(app.secret)");
-                return Identity::empty();
+                return Identity::default();
             }
             Ok(v) => v,
         };
@@ -64,14 +55,14 @@ impl Identity {
         let plain = match CBC::new(key, &key[..16]).decrypt(&cipher) {
             Err(e) => {
                 tracing::error!(err = ?e, "invalid auth_token");
-                return Identity::empty();
+                return Identity::default();
             }
             Ok(v) => v,
         };
 
         serde_json::from_slice::<Identity>(&plain).unwrap_or_else(|e| {
             tracing::error!(err = ?e, "invalid auth_token");
-            Identity::empty()
+            Identity::default()
         })
     }
 

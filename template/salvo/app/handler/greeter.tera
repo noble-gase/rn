@@ -12,14 +12,13 @@ use crate::service::{
 pub async fn hello(req: &mut Request) -> ApiResult<RespHello> {
     let params = req.parse_json::<ReqHello>().await.map_err(|e| {
         tracing::error!(err = ?e, "req.parse_json");
-        Code::ErrParams.wrap("参数解析出错".to_string())
+        Code::ErrParams.with_msg("参数解析出错")
     })?;
     if let Err(e) = params.validate() {
-        return Err(Code::ErrParams.wrap(e.to_string()));
+        return Err(Code::ErrParams.with_msg(e.to_string()));
     }
 
-    // let empty = Identity::empty();
-    // let id = req.extensions().get::<Identity>().unwrap_or(&empty);
+    // let iden = req.extensions().get::<Identity>();
 
     service::greeter::hello(params).await
 }

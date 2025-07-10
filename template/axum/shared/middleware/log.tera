@@ -56,7 +56,7 @@ fn header_to_string(h: &HeaderMap) -> String {
 async fn drain_body(
     request: Request,
     next: Next,
-) -> Result<(Response, (Option<String>, Option<String>)), Code<String>> {
+) -> Result<(Response, (Option<String>, Option<String>)), Code> {
     let ok = match request
         .headers()
         .get(CONTENT_TYPE)
@@ -103,7 +103,7 @@ async fn drain_body(
         Ok(v) => v.to_bytes(),
         Err(e) => {
             tracing::error!(err = ?e, "[resp] body.collect");
-            return Err(Code::ErrSystem.wrap(e.to_string()));
+            return Err(Code::ErrSystem.with_msg(e.to_string()));
         }
     };
     let resp_body_str = std::str::from_utf8(&resp_bytes).map(|s| s.to_string()).ok();

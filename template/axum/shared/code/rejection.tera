@@ -20,9 +20,9 @@ impl IntoResponse for MyRejection {
     fn into_response(self) -> Response {
         let err = match self {
             MyRejection::JSONExtractor(x) => match x {
-                JsonRejection::JsonDataError(e) => Code::ErrData.wrap(e.body_text()),
-                JsonRejection::JsonSyntaxError(e) => Code::ErrData.wrap(e.body_text()),
-                JsonRejection::MissingJsonContentType(e) => Code::ErrData.wrap(e.body_text()),
+                JsonRejection::JsonDataError(e) => Code::ErrData.with_msg(e.body_text()),
+                JsonRejection::JsonSyntaxError(e) => Code::ErrData.with_msg(e.body_text()),
+                JsonRejection::MissingJsonContentType(e) => Code::ErrData.with_msg(e.body_text()),
                 _ => Code::ErrSystem,
             },
         };

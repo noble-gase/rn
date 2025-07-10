@@ -3,18 +3,13 @@ use salvo::{async_trait, writing::Json, Depot, FlowCtrl, Handler, Request, Respo
 
 use shared::{result::code::Code, util::identity::Identity};
 
+#[derive(Default)]
 pub struct Auth;
 
 impl Auth {
     #[inline]
     pub fn new() -> Self {
         Auth {}
-    }
-}
-
-impl Default for Auth {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -27,7 +22,7 @@ impl Handler for Auth {
         resp: &mut Response,
         ctrl: &mut FlowCtrl,
     ) {
-        let empty = Identity::empty();
+        let empty = Identity::default();
         let id = req.extensions().get::<Identity>().unwrap_or(&empty);
         if let Err(e) = auth_check(id).await {
             resp.render(Json(Code::ErrAuth(Some(e.to_string())).to_reply()));

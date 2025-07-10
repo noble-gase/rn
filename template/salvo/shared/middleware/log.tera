@@ -15,18 +15,13 @@ use crate::code::Code;
 
 const MAX_BODY_LOG_SIZE: u64 = 20 << 10; // 20KB
 
+#[derive(Default)]
 pub struct Log;
 
 impl Log {
     #[inline]
     pub fn new() -> Self {
         Log {}
-    }
-}
-
-impl Default for Log {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -87,7 +82,7 @@ fn header_to_string(h: &HeaderMap) -> String {
     serde_json::to_string(&map).unwrap_or_else(|_| String::from("<none>"))
 }
 
-async fn drain_req_body(req: &mut Request) -> ((Option<String>, u64), Option<Code<&str>>) {
+async fn drain_req_body(req: &mut Request) -> ((Option<String>, u64), Option<Code>) {
     // 取出body
     let body = req.take_body();
     let bytes = match body.collect().await {

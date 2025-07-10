@@ -8,18 +8,13 @@ use crate::util::identity::Identity;
 
 pub const TRACE_ID: HeaderName = HeaderName::from_static("x-trace-id");
 
+#[derive(Default)]
 pub struct Trace;
 
 impl Trace {
     #[inline]
     pub fn new() -> Self {
         Trace {}
-    }
-}
-
-impl Default for Trace {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -50,7 +45,7 @@ impl Handler for Trace {
         // Identity
         let token = req.header::<String>(AUTHORIZATION);
         let id = match token {
-            None => Identity::empty(),
+            None => Identity::default(),
             Some(v) => Identity::from_auth_token(v),
         };
         let id_str = id.to_string();
