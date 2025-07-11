@@ -24,13 +24,13 @@ where
     T: Serialize + Send,
 {
     fn into_response(self) -> Response {
-        Json(self.to_reply()).into_response()
+        Json(self.to_status()).into_response()
     }
 }
 
 impl IntoResponse for Code {
     fn into_response(self) -> Response {
-        Json(self.to_reply()).into_response()
+        Json(self.to_status()).into_response()
     }
 }
 

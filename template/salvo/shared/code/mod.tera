@@ -21,7 +21,7 @@ where
 {
     async fn write(mut self, _req: &mut Request, _depot: &mut Depot, resp: &mut Response) {
         resp.status_code(StatusCode::OK);
-        resp.render(Json(self.to_reply()));
+        resp.render(Json(self.to_status()));
     }
 }
 
@@ -29,7 +29,7 @@ where
 impl Writer for Code {
     async fn write(mut self, _req: &mut Request, _depot: &mut Depot, resp: &mut Response) {
         resp.status_code(StatusCode::OK);
-        resp.render(Json(self.to_reply()));
+        resp.render(Json(self.to_status()));
     }
 }
 
