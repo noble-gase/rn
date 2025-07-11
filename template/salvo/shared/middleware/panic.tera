@@ -29,7 +29,7 @@ impl Handler for Catch {
             .await
             .is_err()
         {
-            resp.render(Json(Code::ErrSystem.to_reply()));
+            resp.render(Json(Code::ErrSystem.to_status()));
         }
     }
 }

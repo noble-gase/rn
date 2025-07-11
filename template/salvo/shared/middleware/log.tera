@@ -41,7 +41,7 @@ impl Handler for Log {
         // 获取请求体
         let ((req_body, req_size), code) = drain_req_body(req).await;
         if let Some(v) = code {
-            resp.render(Json(v.to_reply()));
+            resp.render(Json(v.to_status()));
             ctrl.skip_rest();
             return;
         }
