@@ -5,7 +5,7 @@ use kr::manager::{bb8_redis, bb8_redis_cluster};
 use crate::core::config;
 
 pub type RedisPool = bb8::Pool<bb8_redis::RedisConnectionManager>;
-pub type RedisClusterPool = bb8::Pool<bb8_redis_cluster::RedisConnectionManager>;
+pub type RedisClusterPool = bb8::Pool<bb8_redis_cluster::RedisClusterManager>;
 
 static REDIS_POOL: OnceLock<RedisPool> = OnceLock::new();
 // static REDIS_CLUSTER_POOL: OnceLock<RedisClusterPool> = OnceLock::new();
@@ -85,7 +85,7 @@ async fn new_redis_cluster(cfg_key: &str) -> anyhow::Result<RedisClusterPool> {
         .connection_timeout(Duration::from_secs(conn_timeout as u64))
         .idle_timeout(Some(Duration::from_secs(idle_timeout as u64)))
         .max_lifetime(Some(Duration::from_secs(max_lifetime as u64)))
-        .build(bb8_redis_cluster::RedisConnectionManager::new(client))
+        .build(bb8_redis_cluster::RedisClusterManager::new(client))
         .await?;
 
     Ok(pool)

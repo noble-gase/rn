@@ -1,4 +1,4 @@
-use kr::status::Reply;
+use kr::status::Status;
 use kr::{define_error_codes, define_ok};
 use salvo::{prelude::*, Depot, Request, Response, Writer};
 use serde::Serialize;
