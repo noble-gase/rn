@@ -77,7 +77,7 @@ async fn drain_body(
     let req_bytes = match req_body.collect().await {
         Ok(v) => v.to_bytes(),
         Err(e) => {
-            tracing::error!(err = ?e, "[req] body.collect");
+            tracing::error!(err = ?e, "[request] body.collect");
             return Err(Code::ErrSystem);
         }
     };
@@ -102,7 +102,7 @@ async fn drain_body(
     let resp_bytes = match resp_body.collect().await {
         Ok(v) => v.to_bytes(),
         Err(e) => {
-            tracing::error!(err = ?e, "[resp] body.collect");
+            tracing::error!(err = ?e, "[response] body.collect");
             return Err(Code::ErrSystem.with_msg(e.to_string()));
         }
     };

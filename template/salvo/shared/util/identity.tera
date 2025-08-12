@@ -1,10 +1,10 @@
 use anyhow::Result;
 use base64::{prelude::BASE64_STANDARD, Engine};
+use kr::crypto::aes::CBC;
+use kr::times;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
-use kr::crypto::aes::CBC;
-use kr::times;
 
 use crate::core::config;
 
@@ -52,7 +52,9 @@ impl Identity {
             Ok(v) => v,
         };
         let key = secret.as_bytes();
-        let plain = match CBC::new(key, &key[..16]).decrypt(&cipher) {
+
+        let cbc = CBC::new(key, &key[..16]);
+        let plain = match cbc.decrypt().data(&cipher).call() {
             Err(e) => {
                 tracing::error!(err = ?e, "invalid auth_token");
                 return Identity::default();
@@ -67,11 +69,13 @@ impl Identity {
     }
 
     pub fn to_auth_token(&self) -> Result<String> {
+        let plain = serde_json::to_vec(self)?;
+
         let secret = config().get_string("app.secret")?;
         let key = secret.as_bytes();
 
-        let plain = serde_json::to_vec(self)?;
-        let cipher = CBC::new(key, &key[..16]).encrypt(&plain, None)?;
+        let cbc = CBC::new(key, &key[..16]);
+        let cipher = cbc.encrypt().data(&plain).call()?;
 
         Ok(BASE64_STANDARD.encode(cipher))
     }

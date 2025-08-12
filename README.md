@@ -32,7 +32,7 @@ cargo install rnx
 
 ```shell
 rnx new # 在当前目录初始化项目
-rnx new --name=demo # 创建demo项目
+rnx new --name demo # 创建demo项目
 .
 ├── src
 │   ├── app
@@ -56,8 +56,8 @@ rnx new --name=demo # 创建demo项目
 ##### 多应用
 
 ```shell
-rnx new --app=foo --app=bar # 在当前目录初始化项目
-rnx new --name=demo --app=foo --app=bar # 创建demo项目
+rnx new --app foo --app bar # 在当前目录初始化项目
+rnx new --name demo --app foo --app bar # 创建demo项目
 .
 ├── src
 │   ├── app
@@ -90,7 +90,7 @@ rnx new --name=demo --app=foo --app=bar # 创建demo项目
 
 ```shell
 rnx new --axum # 在当前目录初始化项目
-rnx new --name=demo --axum # 创建demo项目
+rnx new --name demo --axum # 创建demo项目
 .
 ├── src
 │   ├── app
@@ -114,8 +114,8 @@ rnx new --name=demo --axum # 创建demo项目
 ##### 多应用
 
 ```shell
-rnx new --app=foo --app=bar --axum # 在当前目录初始化项目
-rnx new --name=demo --app=foo --app=bar --axum # 创建demo项目
+rnx new --app foo --app bar --axum # 在当前目录初始化项目
+rnx new --name demo --app foo --app bar --axum # 创建demo项目
 .
 ├── src
 │   ├── app
@@ -149,7 +149,7 @@ rnx new --name=demo --app=foo --app=bar --axum # 创建demo项目
 ### Salvo
 
 ```shell
-rnx app --name=foo --name=bar
+rnx app --name foo --name bar
 .
 ├── src
 │   ├── app
@@ -174,7 +174,7 @@ rnx app --name=foo --name=bar
 ### Axum
 
 ```shell
-rnx app --name=foo --name=bar --axum
+rnx app --name foo --name bar --axum
 .
 ├── src
 │   ├── app

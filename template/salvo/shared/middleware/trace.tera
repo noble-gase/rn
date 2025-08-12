@@ -1,8 +1,8 @@
 use http::{header::AUTHORIZATION, HeaderName, HeaderValue};
+use kr::crypto::hash;
 use nanoid::nanoid;
 use salvo::{async_trait, Depot, FlowCtrl, Handler, Request, Response};
 use tracing::Instrument;
-use kr::crypto::hash;
 
 use crate::util::identity::Identity;
 
@@ -63,7 +63,7 @@ impl Handler for Trace {
 }
 
 fn gen_trace_id(req: &mut Request, hostname: &str) -> String {
-    let id = hash::md5(format!("{}/{}", hostname, nanoid!(32)).as_bytes());
+    let id = hash::md5::<String>(format!("{}/{}", hostname, nanoid!(32)).as_bytes());
     req.headers_mut().insert(
         TRACE_ID,
         HeaderValue::from_str(&id).unwrap_or(HeaderValue::from_static("")),
