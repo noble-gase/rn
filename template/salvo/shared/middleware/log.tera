@@ -13,7 +13,7 @@ use serde_json::Value;
 
 use crate::code::Code;
 
-const MAX_BODY_LOG_SIZE: u64 = 20 << 10; // 20KB
+const MAX_LOG_SIZE: usize = 32 << 10; // 32KB
 
 #[derive(Default)]
 pub struct Log;
@@ -38,28 +38,30 @@ impl Handler for Log {
         let req_method = req.method().to_string();
         let req_uri = req.uri().to_string();
         let req_header = header_to_string(req.headers());
+
         // 获取请求体
-        let ((req_body, req_size), code) = drain_req_body(req).await;
+        let (req_body, code) = drain_req_body(req).await;
         if let Some(v) = code {
             resp.render(Json(v.to_status()));
             ctrl.skip_rest();
             return;
         }
         ctrl.call_next(req, depot, resp).await;
+
         // 获取响应体
-        let (resp_body, resp_size) = drain_resp_body(resp).await;
+        let resp_body = drain_resp_body(resp).await;
         let status = resp.status_code.unwrap_or_default().as_u16();
+
         // 请求时长
         let duration = (times::now(None) - enter_time).to_string();
+
         // 日志记录
         tracing::info!(
             method = req_method,
             uri = req_uri,
             headers = req_header,
-            req_body = req_body,
-            req_size = req_size,
-            resp_body = resp_body,
-            resp_size = resp_size,
+            request = req_body,
+            response = resp_body,
             status = status,
             duration = duration,
             "request log"
@@ -67,7 +69,6 @@ impl Handler for Log {
     }
 }
 
-#[allow(dead_code)]
 fn header_to_string(h: &HeaderMap) -> String {
     let mut map: HashMap<String, Vec<String>> = HashMap::new();
     for k in h.keys() {
@@ -82,55 +83,55 @@ fn header_to_string(h: &HeaderMap) -> String {
     serde_json::to_string(&map).unwrap_or_else(|_| String::from("<none>"))
 }
 
-async fn drain_req_body(req: &mut Request) -> ((Option<String>, u64), Option<Code>) {
-    // 取出body
+async fn drain_req_body(req: &mut Request) -> (Option<String>, Option<Code>) {
+    // 取出 Body
     let body = req.take_body();
+    // this wont work if the body is a long running stream
     let bytes = match body.collect().await {
         Ok(v) => v.to_bytes(),
         Err(e) => {
             tracing::error!(err = ?e, "[request] body.collect");
-            return ((None, 0), Some(Code::ErrSystem));
+            return (None, Some(Code::ErrSystem));
         }
     };
-    // 判断大小并处理JSON
-    let body_size = bytes.len() as u64;
-    let body_str = if body_size > MAX_BODY_LOG_SIZE {
-        Some(String::from("body too large"))
-    } else {
-        std::str::from_utf8(&bytes)
-            .map(|s| {
-                // 解析JSON字符串
-                if let Ok(parsed_json) = serde_json::from_str::<Value>(s) {
-                    // 将JSON数据格式化为紧凑的字符串
-                    if let Ok(compact_json) = serde_json::to_string(&parsed_json) {
-                        return compact_json;
-                    }
+
+    // 处理 Body
+    let body_str = std::str::from_utf8(&bytes[..bytes.len().min(MAX_LOG_SIZE)])
+        .map(|s| {
+            // 解析JSON字符串
+            if let Ok(v) = serde_json::from_str::<Value>(s) {
+                // 将JSON数据格式化为紧凑的字符串
+                if let Ok(s) = serde_json::to_string(&v) {
+                    return s;
                 }
-                s.to_string()
-            })
-            .ok()
-    };
-    // 重置body
+            }
+            s.to_string()
+        })
+        .ok();
+
+    // 重置 Body
     req.replace_body(ReqBody::Once(bytes));
-    ((body_str, body_size), None)
+    (body_str, None)
 }
 
-async fn drain_resp_body(resp: &mut Response) -> (Option<String>, u64) {
-    let body_size = resp.body.size().unwrap_or_default();
-    if body_size > MAX_BODY_LOG_SIZE {
-        return (Some(String::from("body too large")), body_size);
-    }
-    // 取出body
+async fn drain_resp_body(resp: &mut Response) -> Option<String> {
+    // 取出 Body
     let body = resp.take_body();
+    // this wont work if the body is a long running stream
     let bytes = match body.collect().await {
         Ok(v) => v.to_bytes(),
         Err(e) => {
             tracing::error!(err = ?e, "[response] body.collect");
-            return (None, body_size);
+            return None;
         }
     };
-    let body_str = std::str::from_utf8(&bytes).map(|s| s.to_string()).ok();
-    // 重置body
+
+    // 处理 Body
+    let body_str = std::str::from_utf8(&bytes[..bytes.len().min(MAX_LOG_SIZE)])
+        .map(|s| s.to_string())
+        .ok();
+
+    // 重置 Body
     resp.replace_body(ResBody::Once(bytes));
-    (body_str, body_size)
+    body_str
 }

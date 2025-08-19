@@ -31,7 +31,8 @@ impl Handler for Trace {
             .unwrap_or_default()
             .into_string()
             .unwrap_or_default();
-        // traceId
+
+        // 生成 TraceId
         let trace_id = match req.header::<String>(TRACE_ID) {
             Some(v) => {
                 if !v.is_empty() {
@@ -42,19 +43,22 @@ impl Handler for Trace {
             }
             None => gen_trace_id(req, &hostname),
         };
-        // Identity
+
+        // 解析 Identity
         let token = req.header::<String>(AUTHORIZATION);
         let id = match token {
             None => Identity::default(),
             Some(v) => Identity::from_auth_token(v),
         };
         let id_str = id.to_string();
+
         // 设置 Identity
         req.extensions_mut().insert(id);
+
         // 设置 trace span
         let span = tracing::info_span!("trace", hostname, trace_id, identity = id_str);
         ctrl.call_next(req, depot, resp).instrument(span).await;
-        // 设置返回header
+        // 设置 Header
         resp.headers_mut().insert(
             TRACE_ID,
             HeaderValue::from_str(&trace_id).unwrap_or(HeaderValue::from_static("")),

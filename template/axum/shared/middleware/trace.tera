@@ -13,7 +13,8 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
         .unwrap_or_default()
         .into_string()
         .unwrap_or_default();
-    // traceId
+
+    // 生成 TraceId
     let trace_id = match request
         .headers()
         .get(TRACE_ID)
@@ -28,7 +29,8 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
         }
         None => gen_trace_id(&mut request, &hostname),
     };
-    // Identity
+
+    // 解析 Identity
     let token = request
         .headers()
         .get(AUTHORIZATION)
@@ -38,12 +40,14 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
         Some(v) => Identity::from_auth_token(v.to_string()),
     };
     let id_str = id.to_string();
+
     // 设置 Identity
     request.extensions_mut().insert(id);
+
     // 设置 trace span
     let span = tracing::info_span!("trace", hostname, trace_id, identity = id_str);
     let mut response = next.run(request).instrument(span).await;
-    // 设置返回header
+    // 设置 Header
     response.headers_mut().insert(
         TRACE_ID,
         HeaderValue::from_str(&trace_id).unwrap_or(HeaderValue::from_static("")),
