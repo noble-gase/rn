@@ -2,6 +2,7 @@
 name = "rnx"
 version = "0.4.1"
 edition = "2021"
+keywords = ["http", "web", "scaffolding", "salvo", "axum"]
 description = "Rust web development scaffolding, support salvo and axum."
 license = "MIT"
 repository = "https://github.com/noble-gase/rn"
