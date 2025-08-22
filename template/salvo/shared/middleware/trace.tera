@@ -1,8 +1,7 @@
 use http::{header::AUTHORIZATION, HeaderName, HeaderValue};
-use kr::crypto::hash;
-use nanoid::nanoid;
 use salvo::{async_trait, Depot, FlowCtrl, Handler, Request, Response};
 use tracing::Instrument;
+use uuid::Uuid;
 
 use crate::util::identity::Identity;
 
@@ -38,10 +37,10 @@ impl Handler for Trace {
                 if !v.is_empty() {
                     v
                 } else {
-                    gen_trace_id(req, &hostname)
+                    gen_trace_id(req)
                 }
             }
-            None => gen_trace_id(req, &hostname),
+            None => gen_trace_id(req),
         };
 
         // 解析 Identity
@@ -66,8 +65,8 @@ impl Handler for Trace {
     }
 }
 
-fn gen_trace_id(req: &mut Request, hostname: &str) -> String {
-    let id = hash::md5::<String>(format!("{}/{}", hostname, nanoid!(32)).as_bytes());
+fn gen_trace_id(req: &mut Request) -> String {
+    let id = Uuid::new_v4().simple().to_string();
     req.headers_mut().insert(
         TRACE_ID,
         HeaderValue::from_str(&id).unwrap_or(HeaderValue::from_static("")),

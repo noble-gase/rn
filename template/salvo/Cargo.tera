@@ -37,7 +37,7 @@ time = { version = "0.3", features = [
     "parsing",
 ] }
 bb8 = "0.9"
-nanoid = "0.4"
+uuid = { version = "1.18", features = ["v4"] }
 prometheus = { version = "0.14", features = ["process"] }
 validator = { version = "0.16", features = ["derive"] }
 kr = "0.4"

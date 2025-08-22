@@ -1,8 +1,7 @@
 use axum::{extract::Request, http::HeaderValue, middleware::Next, response::Response};
 use http::{header::AUTHORIZATION, HeaderName};
-use kr::crypto::hash;
-use nanoid::nanoid;
 use tracing::Instrument;
+use uuid::Uuid;
 
 use crate::util::identity::Identity;
 
@@ -24,10 +23,10 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
             if !v.is_empty() {
                 v.to_string()
             } else {
-                gen_trace_id(&mut request, &hostname)
+                gen_trace_id(&mut request)
             }
         }
-        None => gen_trace_id(&mut request, &hostname),
+        None => gen_trace_id(&mut request),
     };
 
     // 解析 Identity
@@ -55,8 +54,8 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
     response
 }
 
-fn gen_trace_id(req: &mut Request, hostname: &str) -> String {
-    let id = hash::md5::<String>(format!("{}/{}", hostname, nanoid!(32)).as_bytes());
+fn gen_trace_id(req: &mut Request) -> String {
+    let id = Uuid::new_v4().simple().to_string();
     req.headers_mut().insert(
         TRACE_ID,
         HeaderValue::from_str(&id).unwrap_or(HeaderValue::from_static("")),
