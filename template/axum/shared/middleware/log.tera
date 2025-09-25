@@ -31,13 +31,12 @@ pub async fn handle(request: Request, next: Next) -> Response {
     let duration = (times::now(None) - enter_time).to_string();
 
     tracing::info!(
+        message = req_uri,
         method = req_method,
-        uri = req_uri,
         headers = req_header,
         request = req_body,
         response = resp_body,
         duration = duration,
-        "request log"
     );
 
     response

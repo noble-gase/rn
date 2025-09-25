@@ -36,7 +36,7 @@ impl Handler for Log {
     ) {
         let enter_time = times::now(None);
         let req_method = req.method().to_string();
-        let req_uri = req.uri().to_string();
+        let req_uri = req.uri().path_and_query().unwrap().to_string();
         let req_header = header_to_string(req.headers());
 
         // 获取请求体
@@ -57,14 +57,13 @@ impl Handler for Log {
 
         // 日志记录
         tracing::info!(
+            message = req_uri,
             method = req_method,
-            uri = req_uri,
             headers = req_header,
             request = req_body,
             response = resp_body,
             status = status,
             duration = duration,
-            "request log"
         );
     }
 }
