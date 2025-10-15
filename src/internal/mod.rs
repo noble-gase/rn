@@ -105,7 +105,7 @@ fn build_project(
     ctx.insert("mode", &mode);
 
     // 创建项目
-    println!("🍺 创建项目: {}", name);
+    println!("🍺 create project: {}", name);
 
     // global
     for filename in tera_global.get_template_names() {
@@ -168,11 +168,14 @@ fn build_app(
             }
         };
         if !is_empty_dir(&app_dir) {
-            println!("👿 目录({:?})不为空，请确认！", app_dir);
+            println!(
+                "👿 the directory({:?}) is not empty, please confirm!",
+                app_dir
+            );
             return;
         }
 
-        println!("🍺 创建App: {}", &app.name);
+        println!("🍺 create application: {}", &app.name);
 
         // app
         for filename in tera_app.get_template_names() {
