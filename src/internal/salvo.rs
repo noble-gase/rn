@@ -46,70 +46,98 @@ pub fn other() -> Tera {
     tera
 }
 
-pub fn shared() -> Tera {
+pub fn infra() -> Tera {
     let mut tera = Tera::default();
     // 使用 include_str! 宏将模板文件嵌入到二进制文件中
     tera.add_raw_templates(vec![
         // lib.rs
         (
             "lib.rs",
-            include_str!("../../template/salvo/shared/lib.tera"),
+            include_str!("../../template/salvo/infra/lib.tera"),
         ),
-        // core
+        // cache
         (
-            "core/mod.rs",
-            include_str!("../../template/salvo/shared/core/mod.tera"),
-        ),
-        (
-            "core/cache.rs",
-            include_str!("../../template/salvo/shared/core/cache.tera"),
+            "cache/mod.rs",
+            include_str!("../../template/salvo/infra/cache/mod.tera"),
         ),
         (
-            "core/db.rs",
-            include_str!("../../template/salvo/shared/core/db.tera"),
-        ),
-        (
-            "core/logger.rs",
-            include_str!("../../template/salvo/shared/core/logger.tera"),
-        ),
-        // middleware
-        (
-            "middleware/mod.rs",
-            include_str!("../../template/salvo/shared/middleware/mod.tera"),
-        ),
-        (
-            "middleware/log.rs",
-            include_str!("../../template/salvo/shared/middleware/log.tera"),
-        ),
-        (
-            "middleware/metrics.rs",
-            include_str!("../../template/salvo/shared/middleware/metrics.tera"),
-        ),
-        (
-            "middleware/panic.rs",
-            include_str!("../../template/salvo/shared/middleware/panic.tera"),
-        ),
-        (
-            "middleware/trace.rs",
-            include_str!("../../template/salvo/shared/middleware/trace.tera"),
+            "cache/redis_pool.rs",
+            include_str!("../../template/salvo/infra/cache/redis_pool.tera"),
         ),
         // code
         (
             "code/mod.rs",
-            include_str!("../../template/salvo/shared/code/mod.tera"),
+            include_str!("../../template/salvo/infra/code/mod.tera"),
+        ),
+        // config
+        (
+            "config/mod.rs",
+            include_str!("../../template/salvo/infra/config/mod.tera"),
+        ),
+        // db
+        (
+            "db/mod.rs",
+            include_str!("../../template/salvo/infra/db/mod.tera"),
+        ),
+        (
+            "db/curd.rs",
+            include_str!("../../template/salvo/infra/db/curd.tera"),
+        ),
+        (
+            "db/pool.rs",
+            include_str!("../../template/salvo/infra/db/pool.tera"),
+        ),
+        // entity
+        (
+            "entity/mod.rs",
+            include_str!("../../template/salvo/infra/entity/mod.tera"),
+        ),
+        (
+            "entity/model.rs",
+            include_str!("../../template/salvo/infra/entity/model.tera"),
+        ),
+        (
+            "entity/table.rs",
+            include_str!("../../template/salvo/infra/entity/table.tera"),
+        ),
+        // logger
+        (
+            "logger/mod.rs",
+            include_str!("../../template/salvo/infra/logger/mod.tera"),
+        ),
+        // middleware
+        (
+            "middleware/mod.rs",
+            include_str!("../../template/salvo/infra/middleware/mod.tera"),
+        ),
+        (
+            "middleware/log.rs",
+            include_str!("../../template/salvo/infra/middleware/log.tera"),
+        ),
+        (
+            "middleware/metrics.rs",
+            include_str!("../../template/salvo/infra/middleware/metrics.tera"),
+        ),
+        (
+            "middleware/panic.rs",
+            include_str!("../../template/salvo/infra/middleware/panic.tera"),
+        ),
+        (
+            "middleware/trace.rs",
+            include_str!("../../template/salvo/infra/middleware/trace.tera"),
         ),
         // util
         (
             "util/mod.rs",
-            include_str!("../../template/salvo/shared/util/mod.tera"),
+            include_str!("../../template/salvo/infra/util/mod.tera"),
         ),
         (
             "util/helper.rs",
-            include_str!("../../template/salvo/shared/util/helper.tera"),
+            include_str!("../../template/salvo/infra/util/helper.tera"),
         ),
         (
             "util/identity.rs",
-            include_str!("../../template/salvo/shared/util/identity.tera"),
+            include_str!("../../template/salvo/infra/util/identity.tera"),
         ),
     ])
     .unwrap();

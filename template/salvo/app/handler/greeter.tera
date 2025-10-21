@@ -1,7 +1,7 @@
 use salvo::{handler, Request};
 use validator::Validate;
 
-use shared::code::{ApiResult, Code};
+use infra::code::{ApiResult, Code};
 
 use crate::service::{
     self,

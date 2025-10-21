@@ -1,29 +1,10 @@
-use std::{sync::OnceLock, time::Duration};
+use std::time::Duration;
 
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
 
-use crate::core::config;
+use crate::config::config;
 
-static DB: OnceLock<MySqlPool> = OnceLock::new();
-
-pub async fn init() {
-    let pool = new("db")
-        .await
-        .unwrap_or_else(|e| panic!("数据库连接失败：{}", e));
-    let _ = DB.set(pool);
-}
-
-pub fn pool() -> &'static MySqlPool {
-    DB.get().expect("数据库连接未初始化")
-}
-
-pub async fn close() {
-    if let Some(pool) = DB.get() {
-        pool.close().await;
-    }
-}
-
-async fn new(cfg_key: &str) -> anyhow::Result<MySqlPool> {
+pub(super) async fn new(cfg_key: &str) -> anyhow::Result<MySqlPool> {
     let cfg = config();
 
     let dsn = cfg.get_string(&format!("{}.dsn", cfg_key))?;

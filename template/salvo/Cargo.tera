@@ -11,8 +11,8 @@ name = "{{ app.name }}"
 path = "{{ app.mainfile }}"
 {% endfor %}
 [lib]
-name = "shared"
-path = "src/shared/lib.rs"
+name = "infra"
+path = "src/infra/lib.rs"
 
 [dependencies]
 futures = "0.3"
@@ -61,4 +61,9 @@ redis = { version = "0.31", features = [
     "cluster",
     "cluster-async",
     "tokio-comp",
+] }
+sea-query = "0.32"
+sea-query-binder = { version = "0.7", features = [
+    "sqlx-mysql",
+    "runtime-tokio-rustls",
 ] }

@@ -1,0 +1,25 @@
+pub mod curd;
+mod pool;
+
+use std::sync::OnceLock;
+
+use sqlx::MySqlPool;
+
+static DB: OnceLock<MySqlPool> = OnceLock::new();
+
+pub async fn init() {
+    let pool = pool::new("db")
+        .await
+        .unwrap_or_else(|e| panic!("DB(db) init failed：{}", e));
+    let _ = DB.set(pool);
+}
+
+pub fn pool() -> &'static MySqlPool {
+    DB.get().expect("DB(db) is not initialized")
+}
+
+pub async fn close() {
+    if let Some(pool) = DB.get() {
+        pool.close().await;
+    }
+}

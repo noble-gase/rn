@@ -20,6 +20,7 @@ cargo install rnx
 - 命令行使用 [clap](https://github.com/clap-rs/clap)
 - 异步运行时使用 [tokio](https://github.com/tokio-rs/tokio)
 - 参数验证器使用 [validator](https://github.com/Keats/validator)
+- 包含 基于 sqlx 和 sea-query 的 curd 封装
 - 支持 Prometheus Metrics 和 Request 中间件
 - 包含 TraceId、认证、请求日志、Panic捕获 中间件
 - 简单好用的 API Result（宏定义错误码）统一输出方式
@@ -42,10 +43,14 @@ rnx new --name demo # 创建demo项目
 │   │   ├── router
 │   │   ├── service
 │   │   └── main.rs
-│   └── shared
-│       ├── core
+│   └── infra
+│       ├── cache
+│       ├── code
+│       ├── config
+│       ├── db
+│       ├── entity
+│       ├── logger
 │       ├── middleware
-│       ├── result
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
@@ -71,10 +76,14 @@ rnx new --name demo --app foo --app bar # 创建demo项目
 │   │   └── bar
 │   │       ├── ...
 │   │       └── main.rs
-│   └── shared
-│       ├── core
+│   └── infra
+│       ├── cache
+│       ├── code
+│       ├── config
+│       ├── db
+│       ├── entity
+│       ├── logger
 │       ├── middleware
-│       ├── result
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
@@ -100,10 +109,14 @@ rnx new --name demo --axum # 创建demo项目
 │   │   ├── router
 │   │   ├── service
 │   │   └── main.rs
-│   └── shared
-│       ├── core
+│   └── infra
+│       ├── cache
+│       ├── code
+│       ├── config
+│       ├── db
+│       ├── entity
+│       ├── logger
 │       ├── middleware
-│       ├── result
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
@@ -129,10 +142,14 @@ rnx new --name demo --app foo --app bar --axum # 创建demo项目
 │   │   └── bar
 │   │       ├── ...
 │   │       └── main.rs
-│   └── shared
-│       ├── core
+│   └── infra
+│       ├── cache
+│       ├── code
+│       ├── config
+│       ├── db
+│       ├── entity
+│       ├── logger
 │       ├── middleware
-│       ├── result
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
@@ -163,7 +180,9 @@ rnx app --name foo --name bar
 │   │   └── bar
 │   │       ├── ...
 │   │       └── main.rs
-│   └── shared
+│   └── infra
+│       ├── ...
+│       └── lib.rs
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
@@ -188,7 +207,9 @@ rnx app --name foo --name bar --axum
 │   │   └── bar
 │   │       ├── ...
 │   │       └── main.rs
-│   └── shared
+│   └── infra
+│       ├── ...
+│       └── lib.rs
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile

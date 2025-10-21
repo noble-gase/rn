@@ -6,14 +6,14 @@ pub mod service;
 use std::panic;
 
 use clap::Parser;
-use shared::core::{self, logger};
+use infra::{config, logger};
 
 #[tokio::main]
 async fn main() {
     let cli = cmd::Cli::parse();
 
-    // load config
-    core::load_config(&cli.config);
+    // init config
+    config::init(&cli.config);
     // _guard 必须在 main 函数中才能使日志生效
     let _guard = logger::init();
 

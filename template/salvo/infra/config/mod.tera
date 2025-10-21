@@ -1,0 +1,21 @@
+use config::Config;
+use std::{fs, sync::OnceLock};
+
+pub(crate) static C: OnceLock<Config> = OnceLock::new();
+
+pub fn init(cfg_file: &str) {
+    let path = fs::canonicalize(cfg_file)
+        .unwrap_or_else(|e| panic!("Config({}) init failed：{}", cfg_file, e));
+
+    let cfg = Config::builder()
+        .add_source(config::File::with_name(path.to_str().unwrap()))
+        .build()
+        .unwrap_or_else(|e| panic!("Config({}) init failed：{}", cfg_file, e));
+
+    let _ = C.set(cfg);
+}
+
+pub fn config() -> &'static Config {
+    C.get()
+        .unwrap_or_else(|| panic!("Config is not initialized"))
+}

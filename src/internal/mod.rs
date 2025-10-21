@@ -32,7 +32,7 @@ pub fn is_empty_dir(path: &Path) -> bool {
 }
 
 pub fn build_axum_project(root: &Path, name: &str, apps: &Vec<String>) {
-    let template = (axum::global(), axum::shared());
+    let template = (axum::global(), axum::infra());
     let (mode, bins) = build_project(root, name, apps, template);
     build_app(
         root,
@@ -52,7 +52,7 @@ pub fn build_axum_app(root: &Path, apps: &Vec<App>, mode: AppMode) {
 }
 
 pub fn build_salvo_project(root: &Path, name: &str, apps: &Vec<String>) {
-    let template = (salvo::global(), salvo::shared());
+    let template = (salvo::global(), salvo::infra());
     let (mode, bins) = build_project(root, name, apps, template);
     build_app(
         root,
@@ -115,11 +115,11 @@ fn build_project(
         let mut file = File::create(path).unwrap();
         // 将内容写入文件
         file.write_all(content.as_bytes()).unwrap();
-        println!("shared/{}", filename)
+        println!("infra/{}", filename)
     }
 
-    // shared
-    let internal_dir = src_dir.join("shared");
+    // infra
+    let internal_dir = src_dir.join("infra");
     for filename in tera_internal.get_template_names() {
         let content = tera_internal.render(filename, &ctx).unwrap();
         let path = internal_dir.join(filename);
@@ -130,7 +130,7 @@ fn build_project(
         let mut file = File::create(path).unwrap();
         // 将内容写入文件
         file.write_all(content.as_bytes()).unwrap();
-        println!("shared/{}", filename)
+        println!("infra/{}", filename)
     }
 
     (mode, bins)

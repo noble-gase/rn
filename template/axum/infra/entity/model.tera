@@ -1,0 +1,10 @@
+use time::OffsetDateTime;
+
+#[derive(sqlx::FromRow, Debug)]
+#[allow(dead_code)]
+pub struct Demo {
+    id: i64,
+    name: String,
+    created_at: OffsetDateTime, // If datetime, use PrimitiveDateTime
+    updated_at: OffsetDateTime, // If datetime, use PrimitiveDateTime
+}

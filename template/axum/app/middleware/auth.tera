@@ -5,7 +5,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 
-use shared::{result::code::Code, util::identity::Identity};
+use infra::{result::code::Code, util::identity::Identity};
 
 pub async fn handle(request: Request, next: Next) -> Response {
     let identity = request.extensions().get::<Identity>();

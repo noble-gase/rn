@@ -1,37 +1,13 @@
-use std::{sync::OnceLock, time::Duration};
+use std::time::Duration;
 
 use kr::manager::{bb8_redis, bb8_redis_cluster};
 
-use crate::core::config;
+use crate::config::config;
 
-pub type RedisPool = bb8::Pool<bb8_redis::RedisConnectionManager>;
-pub type RedisClusterPool = bb8::Pool<bb8_redis_cluster::RedisClusterManager>;
+pub type Pool = bb8::Pool<bb8_redis::RedisConnectionManager>;
+pub type ClusterPool = bb8::Pool<bb8_redis_cluster::RedisClusterManager>;
 
-static REDIS_POOL: OnceLock<RedisPool> = OnceLock::new();
-// static REDIS_CLUSTER_POOL: OnceLock<RedisClusterPool> = OnceLock::new();
-
-pub async fn init() {
-    let pool = new_redis("redis")
-        .await
-        .unwrap_or_else(|e| panic!("Redis连接失败: {}", e));
-    let _ = REDIS_POOL.set(pool);
-
-    // cluster
-    // let cluster_pool = new_redis_cluster("redis-cluster")
-    //     .await
-    //     .unwrap_or_else(|e| panic!("Redis集群连接失败: {}", e));
-    // let _ = REDIS_CLUSTER_POOL.set(cluster_pool);
-}
-
-pub fn pool() -> &'static RedisPool {
-    REDIS_POOL.get().expect("Redis连接池未初始化")
-}
-
-// pub fn cluster_pool() -> &'static RedisClusterPool {
-//     REDIS_CLUSTER_POOL.get().expect("Redis集群连接池未初始化")
-// }
-
-async fn new_redis(cfg_key: &str) -> anyhow::Result<RedisPool> {
+pub(super) async fn new(cfg_key: &str) -> anyhow::Result<Pool> {
     let cfg = config();
 
     let client = redis::Client::open(cfg.get_string(&format!("{}.dsn", cfg_key))?)?;
@@ -59,7 +35,7 @@ async fn new_redis(cfg_key: &str) -> anyhow::Result<RedisPool> {
 }
 
 #[allow(unused)]
-async fn new_redis_cluster(cfg_key: &str) -> anyhow::Result<RedisClusterPool> {
+pub(super) async fn new_cluster(cfg_key: &str) -> anyhow::Result<ClusterPool> {
     let cfg = config();
 
     let nodes = cfg

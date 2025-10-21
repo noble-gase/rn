@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use salvo::{prelude::*, server::ServerHandle};
-use shared::core::config;
+use infra::config::config;
 use tokio::signal::unix::{signal, SignalKind};
 
 use crate::router;
