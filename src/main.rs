@@ -11,7 +11,7 @@ fn main() {
         Some(cmd::Command::New { name, axum, app }) => cmd::project::run(name, axum, app),
         Some(cmd::Command::App { name, axum }) => cmd::app::run(name, axum),
         _ => {
-            println!("🦀 欢迎使用noble-gase[Rust]脚手架");
+            println!("🦀 Welcome to use noble-gase[Rust] scaffolding");
         }
     }
 }

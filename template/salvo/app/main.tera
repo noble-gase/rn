@@ -27,7 +27,7 @@ async fn main() {
         Some(cmd::Command::Hello { name }) => cmd::hello::run(name),
         Some(cmd::Command::Serve) => cmd::serve::run().await,
         _ => {
-            println!("🦀 欢迎使用noble-gase[Salvo]脚手架");
+            println!("🦀 Welcome to use noble-gase[Salvo] scaffolding");
         }
     }
     cleanup().await;
