@@ -7,7 +7,7 @@ pub enum Demo {
     Id,
     Name,
     CreatedAt,
-    UpdateAt,
+    UpdatedAt,
 }
 
 // Mapping between Enum variant and its corresponding string value
@@ -18,7 +18,7 @@ pub enum Demo {
 //             Self::Id => "id",
 //             Self::Name => "name",
 //             Self::CreatedAt => "created_at",
-//             Self::UpdateAt => "update_at",
+//             Self::UpdatedAt => "updated_at",
 //         }
 //     }
 // }

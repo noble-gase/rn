@@ -40,7 +40,6 @@ bb8 = "0.9"
 uuid = { version = "1.18", features = ["v4"] }
 prometheus = { version = "0.14", features = ["process"] }
 validator = { version = "0.16", features = ["derive"] }
-kr = "0.4"
 hyper = "1.0"
 http = "1.0"
 http-body = "1.0"
@@ -64,3 +63,4 @@ sea-query-binder = { version = "0.7", features = [
     "sqlx-mysql",
     "runtime-tokio-rustls",
 ] }
+kr = { version = "0.5", features = ["macros"] }
