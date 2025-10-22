@@ -1,6 +1,6 @@
 [package]
 name = "rnx"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2021"
 authors = ["ShengHui <847713844@qq.com>"]
 description = "Rust web development scaffolding, support salvo and axum"

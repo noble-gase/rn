@@ -11,7 +11,7 @@ pub fn run(name: Option<String>, axum: bool, apps: Vec<String>) {
             let root = cur_dir.join(&v);
             // 判断目录是否为空
             if !is_empty_dir(&root) {
-                println!("👿 the directory({:?}) is not empty, please confirm!", root);
+                println!("👿 The directory({:?}) is not empty, please confirm!", root);
                 return;
             }
             // 创建项目目录
@@ -21,7 +21,7 @@ pub fn run(name: Option<String>, axum: bool, apps: Vec<String>) {
         None => {
             // 判断当前目录是否存在Cargo.toml
             if cur_dir.join("Cargo.toml").exists() {
-                println!("👿 the current directory already exists Cargo.toml, please confirm!");
+                println!("👿 The current directory already exists Cargo.toml, please confirm!");
                 return;
             }
             let v = cur_dir.file_name().unwrap().to_string_lossy().to_string();
@@ -36,5 +36,5 @@ pub fn run(name: Option<String>, axum: bool, apps: Vec<String>) {
         internal::build_salvo_project(&root, &name, &apps);
     }
 
-    println!("🍺 project creation completed! please read README")
+    println!("🦀 Project creation completed! please read README")
 }

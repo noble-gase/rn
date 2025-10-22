@@ -5,7 +5,7 @@ use tera::Context;
 use crate::internal::{self, App, AppMode};
 
 pub const TEMPLATE: &str = r#"
-🍺 The app is now created! Please add the following configuration to Cargo.toml:
+🦀 The app is now created! Please add the following configuration to Cargo.toml:
 {% for app in apps %}
 [[bin]]
 name = "{{ app.name }}"
@@ -16,7 +16,7 @@ path = "{{ app.mainfile }}"
 pub fn run(apps: Vec<String>, axum: bool) {
     // 检查Cargo.toml是否存在
     if fs::metadata("Cargo.toml").is_err() {
-        println!("Cargo.toml does not exist, please confirm!");
+        println!("👿 Cargo.toml does not exist, please confirm!");
         return;
     }
 
