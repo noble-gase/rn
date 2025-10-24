@@ -1,6 +1,6 @@
 use std::{env, fs};
 
-use crate::internal::{self, is_empty_dir};
+use crate::core::{self, is_empty_dir};
 
 pub fn run(name: Option<String>, axum: bool, apps: Vec<String>) {
     // 获取当前目录
@@ -31,9 +31,9 @@ pub fn run(name: Option<String>, axum: bool, apps: Vec<String>) {
 
     // 创建项目
     if axum {
-        internal::build_axum_project(&root, &name, &apps);
+        core::build_axum_project(&root, name, apps);
     } else {
-        internal::build_salvo_project(&root, &name, &apps);
+        core::build_salvo_project(&root, name, apps);
     }
 
     println!("🦀 Project creation completed! please read README")

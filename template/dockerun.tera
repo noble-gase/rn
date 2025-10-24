@@ -1,11 +1,12 @@
 #!/bin/bash
+
 docker rm -f app_{{ app_name }}
 docker rmi -f img_{{ app_name }}
 
-{% if dockerfile == "Dockerfile" -%}
+{% if app_name == "app" -%}
 docker build -t img_{{ app_name }} .
 {% else %}
-docker build -f {{ dockerfile }} -t img_{{ app_name }} .
+docker build -f {{ app_name }}.dockerfile -t img_{{ app_name }} .
 {% endif -%}
 docker image prune -f
 

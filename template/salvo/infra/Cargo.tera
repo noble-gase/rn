@@ -1,0 +1,42 @@
+[package]
+name = "infra"
+description = "infra crate"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+name = "infra"
+path = "src/lib.rs"
+
+[dependencies]
+futures = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["json"] }
+tracing-appender = { workspace = true }
+hostname = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+rand = { workspace = true }
+base64 = { workspace = true }
+bcrypt = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+config = { workspace = true }
+time = { workspace = true }
+bb8 = { workspace = true }
+uuid = { workspace = true, features = ["v4"] }
+prometheus = { workspace = true, features = ["process"] }
+validator = { workspace = true, features = ["derive"] }
+hyper = { workspace = true }
+http = { workspace = true }
+http-body = { workspace = true }
+http-body-util = { workspace = true }
+salvo = { workspace = true }
+sqlx = { workspace = true }
+redis = { workspace = true, features = ["cluster", "cluster-async"] }
+sea-query = { workspace = true }
+sea-query-binder = { workspace = true, features = ["sqlx-mysql"] }
+kr = { workspace = true }

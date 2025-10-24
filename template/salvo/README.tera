@@ -21,18 +21,15 @@
 
 #### 2. 本地运行
 
-```shell
-{%- if mode == "Multi" %}
-# 配置文件
-<app>.config.toml
+> 进入app目录
 
-# 启动服务
-cargo run --bin=<app> serve
-{% else %}
+```shell
 # 配置文件
 config.toml
 
+# 显示帮助
+cargo run -- -h
+
 # 启动服务
 cargo run serve
-{% endif -%}
 ```

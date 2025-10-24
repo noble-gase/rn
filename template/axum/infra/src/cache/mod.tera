@@ -1,0 +1,16 @@
+mod redis_pool;
+
+use std::sync::OnceLock;
+
+static REDIS: OnceLock<bb8::Pool<redis_pool::SingleConn>> = OnceLock::new();
+
+pub async fn init() {
+    let pool = redis_pool::new::<redis_pool::SingleMode>("redis")
+        .await
+        .unwrap_or_else(|e| panic!("Redis(redis) init failed: {}", e));
+    let _ = REDIS.set(pool);
+}
+
+pub fn pool() -> &'static bb8::Pool<redis_pool::SingleConn> {
+    REDIS.get().expect("Redis(redis) is not initialized")
+}

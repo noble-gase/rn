@@ -1,0 +1,96 @@
+use std::time::Duration;
+
+use bb8::ManageConnection;
+use kr::manager::{bb8_redis, bb8_redis_cluster};
+
+use crate::config::config;
+
+pub type SingleConn = bb8_redis::RedisConnectionManager;
+
+#[allow(dead_code)]
+pub type ClusterConn = bb8_redis_cluster::RedisClusterManager;
+
+pub trait ManagerFactory {
+    type Output: ManageConnection<Error: std::error::Error + Send + Sync + 'static>
+        + Send
+        + Sync
+        + 'static;
+
+    fn new(cfg_key: &str) -> anyhow::Result<Self::Output>;
+}
+
+pub struct SingleMode;
+
+impl ManagerFactory for SingleMode {
+    type Output = SingleConn;
+
+    fn new(cfg_key: &str) -> anyhow::Result<Self::Output> {
+        let params = config().get_string(&format!("{}.addr", cfg_key))?;
+
+        let client = redis::Client::open(params)?;
+        let mut conn = client.get_connection()?;
+        let _ = redis::cmd("PING").query::<String>(&mut conn)?;
+
+        Ok(SingleConn::new(client))
+    }
+}
+
+#[allow(dead_code)]
+pub struct ClusterMode;
+
+impl ManagerFactory for ClusterMode {
+    type Output = ClusterConn;
+
+    fn new(cfg_key: &str) -> anyhow::Result<Self::Output> {
+        let nodes = config()
+            .get_array(&format!("{}.addrs", cfg_key))?
+            .into_iter()
+            .map(|v| v.to_string())
+            .collect::<Vec<String>>();
+
+        let client = redis::cluster::ClusterClient::new(nodes)?;
+        let mut conn = client.get_connection()?;
+        let _ = redis::cmd("PING").query::<String>(&mut conn)?;
+
+        Ok(ClusterConn::new(client))
+    }
+}
+
+/// 生成 Redis 连接池
+///
+/// # Examples
+///
+/// ```
+/// // [single] config key : redis
+/// redis_pool::new::<redis_pool::SingleMode>("redis").await;
+///
+/// // [cluster] config key : redis-cluster
+/// redis_pool::new::<redis_pool::ClusterMode>("redis-cluster").await;
+/// ```
+pub async fn new<T>(cfg_key: &str) -> anyhow::Result<bb8::Pool<T::Output>>
+where
+    T: ManagerFactory,
+{
+    let manager = T::new(cfg_key)?;
+
+    let cfg = config();
+
+    let max_size = cfg
+        .get_int(&format!("{}.options.max_size", cfg_key))
+        .unwrap_or(20);
+    let min_idle = cfg.get_int("{}.options.min_idle").unwrap_or(10);
+    let conn_timeout = cfg.get_int("{}.options.conn_timeout").unwrap_or(10);
+    let idle_timeout = cfg.get_int("{}.options.idle_timeout").unwrap_or(300);
+    let max_lifetime = cfg.get_int("{}.options.max_lifetime").unwrap_or(600);
+
+    let pool = bb8::Pool::builder()
+        .max_size(max_size as u32)
+        .min_idle(Some(min_idle as u32))
+        .connection_timeout(Duration::from_secs(conn_timeout as u64))
+        .idle_timeout(Some(Duration::from_secs(idle_timeout as u64)))
+        .max_lifetime(Some(Duration::from_secs(max_lifetime as u64)))
+        .build(manager)
+        .await?;
+
+    Ok(pool)
+}

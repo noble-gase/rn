@@ -2,7 +2,7 @@ use sea_query::{
     DeleteStatement, Expr, InsertStatement, MysqlQueryBuilder, SelectStatement, UpdateStatement,
 };
 use sea_query_binder::SqlxBinder;
-use sqlx::{Error, FromRow, MySqlPool};
+use sqlx::{mysql::MySqlRow, Error, FromRow, MySqlPool};
 
 /// 插入记录
 ///
@@ -15,7 +15,7 @@ use sqlx::{Error, FromRow, MySqlPool};
 ///     .values_panic(["demo".into()])
 ///     .to_owned();
 ///
-/// let ret = curd::create(db::pool(), stmt).await;
+/// curd::create(db::pool(), stmt).await;
 /// ```
 pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> Result<u64, Error> {
     // SQL日志
@@ -39,7 +39,7 @@ pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> Result<u64, Error>
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// let ret = curd::update(db::pool(), stmt).await;
+/// curd::update(db::pool(), stmt).await;
 /// ```
 pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> Result<u64, Error> {
     // SQL日志
@@ -62,7 +62,7 @@ pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> Result<u64, Error>
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// let ret = curd::delete(db::pool(), stmt).await;
+/// curd::delete(db::pool(), stmt).await;
 /// ```
 pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> Result<u64, Error> {
     // SQL日志
@@ -85,7 +85,7 @@ pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> Result<u64, Error>
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// let ret = curd::count(db::pool(), stmt).await;
+/// curd::count(db::pool(), stmt).await;
 /// ```
 pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> Result<i64, Error> {
     stmt.clear_selects();
@@ -113,11 +113,11 @@ pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> Result<i64, Err
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// let ret = curd::find_one::<model::Demo>(db::pool(), stmt).await;
+/// curd::find_one::<model::Demo>(db::pool(), stmt).await;
 /// ```
 pub async fn find_one<T>(db: &MySqlPool, mut stmt: SelectStatement) -> Result<Option<T>, Error>
 where
-    T: for<'r> FromRow<'r, sqlx::mysql::MySqlRow> + Send + Unpin,
+    T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
     stmt.limit(1);
 
@@ -144,11 +144,11 @@ where
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// let ret = curd::find_all::<model::Demo>(db::pool(), stmt).await;
+/// curd::find_all::<model::Demo>(db::pool(), stmt).await;
 /// ```
 pub async fn find_all<T>(db: &MySqlPool, stmt: SelectStatement) -> Result<Vec<T>, Error>
 where
-    T: for<'r> FromRow<'r, sqlx::mysql::MySqlRow> + Send + Unpin,
+    T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
     // SQL日志
     tracing::info!(SQL = stmt.to_string(MysqlQueryBuilder));
@@ -174,7 +174,7 @@ where
 ///     .order_by(table::Demo::Id, Order::Desc)
 ///     .to_owned();
 ///
-/// let ret = curd::paginate::<model::Demo>(db::pool(), stmt, 1, 10).await;
+/// curd::paginate::<model::Demo>(db::pool(), stmt, 1, 10).await;
 /// ```
 pub async fn paginate<T>(
     db: &MySqlPool,
@@ -183,7 +183,7 @@ pub async fn paginate<T>(
     mut size: i32,
 ) -> Result<(Vec<T>, i64), Error>
 where
-    T: for<'r> FromRow<'r, sqlx::mysql::MySqlRow> + Send + Unpin,
+    T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
     // 构建 count 查询
     let mut count = stmt.clone();

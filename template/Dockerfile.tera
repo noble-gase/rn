@@ -4,7 +4,7 @@ WORKDIR /project
 
 COPY . .
 
-{% if dockerfile == "Dockerfile" -%}
+{% if app_name == "app" -%}
 RUN cargo build --release
 {% else %}
 RUN cargo build --bin {{ app_name }} --release
@@ -23,4 +23,4 @@ EXPOSE 8000
 
 ENTRYPOINT ["./{{ app_name }}"]
 
-CMD ["serve", "--config", "/data/config.toml"]
+CMD ["--config", "/data/config.toml", "serve"]

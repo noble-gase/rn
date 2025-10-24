@@ -6,7 +6,7 @@ pub mod service;
 use std::panic;
 
 use clap::Parser;
-use infra::{config, logger};
+use infra::{cache, config, db, logger};
 
 #[tokio::main]
 async fn main() {
@@ -35,9 +35,9 @@ async fn main() {
 
 async fn init() {
     // 初始化数据库
-    // db::init().await;
+    db::init().await;
     // 初始化Redis
-    // cache::init().await;
+    cache::init().await;
 }
 
 async fn cleanup() {

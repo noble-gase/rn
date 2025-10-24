@@ -1,0 +1,22 @@
+use infra::db::{self, curd};
+use sea_query::{Expr, Query};
+use sqlx::{mysql::MySqlRow, Error, FromRow};
+
+use crate::schema::table;
+
+pub async fn get_by_id<T>(id: i64, cols: Option<Vec<table::Demo>>) -> Result<Option<T>, Error>
+where
+    T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
+{
+    let mut stmt = Query::select()
+        .from(table::Demo::Table)
+        .and_where(Expr::col(table::Demo::Id).eq(id))
+        .to_owned();
+
+    stmt = match cols {
+        None => stmt.expr(Expr::cust("*")).to_owned(),
+        Some(v) => stmt.columns(v).to_owned(),
+    };
+
+    curd::find_one(db::pool(), stmt).await
+}

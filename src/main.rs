@@ -1,5 +1,5 @@
 mod cmd;
-mod internal;
+mod core;
 
 use clap::Parser;
 

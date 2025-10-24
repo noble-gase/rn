@@ -12,7 +12,6 @@
 - 包含 基于 sqlx 和 sea-query 的 curd 封装
 - 支持 Prometheus Metrics 和 Request 中间件
 - 包含 Trace、认证、请求日志、Panic捕获 中间价
-- 包含 基于 sqlx 和 sea-query 的 curd 封装
 - 简单好用的 API Result（宏定义错误码）统一输出方式
 
 #### 1. 模块说明
@@ -22,18 +21,15 @@
 
 #### 2. 本地运行
 
-```shell
-{%- if mode == "Multi" %}
-# 配置文件
-<app>.config.toml
+> 进入app目录
 
-# 启动服务
-cargo run --bin=<app> serve
-{% else %}
+```shell
 # 配置文件
 config.toml
 
+# 显示帮助
+cargo run -- -h
+
 # 启动服务
 cargo run serve
-{% endif -%}
 ```

@@ -1,0 +1,26 @@
+[package]
+name = "app"
+description = "app crate"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+domain = { workspace = true }
+infra = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
+clap = { workspace = true, features = ["derive"] }
+tracing = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+prometheus = { workspace = true, features = ["process"] }
+validator = { workspace = true, features = ["derive"] }
+hyper = { workspace = true }
+http = { workspace = true }
+http-body = { workspace = true }
+http-body-util = { workspace = true }
+tower-http = { workspace = true, features = ["cors"] }
+axum = { workspace = true, features = ["macros", "http2"] }
+axum-extra = { workspace = true }
+kr = { workspace = true }

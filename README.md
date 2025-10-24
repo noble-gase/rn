@@ -48,9 +48,9 @@ rnx new --name demo # 创建demo项目
 │       ├── code
 │       ├── config
 │       ├── db
-│       ├── entity
 │       ├── logger
 │       ├── middleware
+│       ├── schema
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
@@ -81,9 +81,9 @@ rnx new --name demo --app foo --app bar # 创建demo项目
 │       ├── code
 │       ├── config
 │       ├── db
-│       ├── entity
 │       ├── logger
 │       ├── middleware
+│       ├── schema
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
@@ -114,9 +114,9 @@ rnx new --name demo --axum # 创建demo项目
 │       ├── code
 │       ├── config
 │       ├── db
-│       ├── entity
 │       ├── logger
 │       ├── middleware
+│       ├── schema
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
@@ -147,9 +147,9 @@ rnx new --name demo --app foo --app bar --axum # 创建demo项目
 │       ├── code
 │       ├── config
 │       ├── db
-│       ├── entity
 │       ├── logger
 │       ├── middleware
+│       ├── schema
 │       ├── util
 │       └── lib.rs
 ├── Cargo.toml
