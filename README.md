@@ -30,11 +30,11 @@ cargo install rnx
 ### 单应用
 
 ```shell
-# Salvo
+# salvo
 rnx new # 在当前目录初始化项目
 rnx new --name demo # 创建demo项目
 
-# Axum
+# axum
 rnx new --axum # 在当前目录初始化项目
 rnx new --name demo --axum # 创建demo项目
 
@@ -71,18 +71,18 @@ rnx new --name demo --axum # 创建demo项目
 ### 多应用
 
 ```shell
-# Salvo
+# salvo
 rnx new --app foo --app bar # 在当前目录初始化项目
 rnx new --name demo --app foo --app bar # 创建demo项目
 
-# Axum
+# axum
 rnx new --app foo --app bar --axum # 在当前目录初始化项目
 rnx new --name demo --app foo --app bar --axum # 创建demo项目
 
 .
 ├── Cargo.toml
-├── foo.dockerfile
-├── bar.dockerfile
+├── Dockerfile.foo
+├── Dockerfile.bar
 ├── app/
 │   ├── foo/
 │   │   ├── Cargo.toml
@@ -121,16 +121,16 @@ rnx new --name demo --app foo --app bar --axum # 创建demo项目
 > 多应用项目适用，需在项目根目录执行（即：`Cargo.toml` 所在目录）
 
 ```shell
-# Salvo
+# salvo
 rnx app --name foo --name bar
 
-# Axum
+# axum
 rnx app --name foo --name bar --axum
 
 .
 ├── Cargo.toml
-├── foo.dockerfile
-├── bar.dockerfile
+├── Dockerfile.foo
+├── Dockerfile.bar
 ├── app/
 │   ├── foo/
 │   │   ├── Cargo.toml
