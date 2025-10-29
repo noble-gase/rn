@@ -146,15 +146,6 @@ pub fn infra() -> Tera {
             "src/lib.rs",
             include_str!("../../template/axum/infra/src/lib.tera"),
         ),
-        // cache
-        (
-            "src/cache/mod.rs",
-            include_str!("../../template/axum/infra/src/cache/mod.tera"),
-        ),
-        (
-            "src/cache/redis_pool.rs",
-            include_str!("../../template/axum/infra/src/cache/redis_pool.tera"),
-        ),
         // code
         (
             "src/code/mod.rs",
@@ -164,28 +155,26 @@ pub fn infra() -> Tera {
             "src/code/rejection.rs",
             include_str!("../../template/axum/infra/src/code/rejection.tera"),
         ),
-        // config
+        // core
         (
-            "src/config/mod.rs",
-            include_str!("../../template/axum/infra/src/config/mod.tera"),
-        ),
-        // db
-        (
-            "src/db/mod.rs",
-            include_str!("../../template/axum/infra/src/db/mod.tera"),
+            "src/core/mod.rs",
+            include_str!("../../template/axum/infra/src/core/mod.tera"),
         ),
         (
-            "src/db/curd.rs",
-            include_str!("../../template/axum/infra/src/db/curd.tera"),
+            "src/core/config.rs",
+            include_str!("../../template/axum/infra/src/core/config.tera"),
         ),
         (
-            "src/db/pool.rs",
-            include_str!("../../template/axum/infra/src/db/pool.tera"),
+            "src/core/db.rs",
+            include_str!("../../template/axum/infra/src/core/db.tera"),
         ),
-        // logger
         (
-            "src/logger/mod.rs",
-            include_str!("../../template/axum/infra/src/logger/mod.tera"),
+            "src/core/logger.rs",
+            include_str!("../../template/axum/infra/src/core/logger.tera"),
+        ),
+        (
+            "src/core/redis_pool.rs",
+            include_str!("../../template/axum/infra/src/core/redis_pool.tera"),
         ),
         // middleware
         (
@@ -212,6 +201,10 @@ pub fn infra() -> Tera {
         (
             "src/util/mod.rs",
             include_str!("../../template/axum/infra/src/util/mod.tera"),
+        ),
+        (
+            "src/util/curd.rs",
+            include_str!("../../template/axum/infra/src/util/curd.tera"),
         ),
         (
             "src/util/helper.rs",

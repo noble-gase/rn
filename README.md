@@ -27,194 +27,137 @@ cargo install rnx
 
 ## 创建项目
 
-### Salvo
-
-##### 单应用
+### 单应用
 
 ```shell
+# Salvo
 rnx new # 在当前目录初始化项目
 rnx new --name demo # 创建demo项目
-.
-├── src
-│   ├── app
-│   │   ├── cmd
-│   │   ├── hanlder
-│   │   ├── middleware
-│   │   ├── router
-│   │   ├── service
-│   │   └── main.rs
-│   └── infra
-│       ├── cache
-│       ├── code
-│       ├── config
-│       ├── db
-│       ├── logger
-│       ├── middleware
-│       ├── schema
-│       ├── util
-│       └── lib.rs
-├── Cargo.toml
-├── Dockerfile
-└── config.toml
-```
 
-##### 多应用
-
-```shell
-rnx new --app foo --app bar # 在当前目录初始化项目
-rnx new --name demo --app foo --app bar # 创建demo项目
-.
-├── src
-│   ├── app
-│   │   ├── foo
-│   │   │   ├── cmd
-│   │   │   ├── handler
-│   │   │   ├── middleware
-│   │   │   ├── router
-│   │   │   ├── service
-│   │   │   └── main.rs
-│   │   └── bar
-│   │       ├── ...
-│   │       └── main.rs
-│   └── infra
-│       ├── cache
-│       ├── code
-│       ├── config
-│       ├── db
-│       ├── logger
-│       ├── middleware
-│       ├── schema
-│       ├── util
-│       └── lib.rs
-├── Cargo.toml
-├── foo.dockerfile
-├── bar.dockerfile
-├── foo.config.toml
-└── bar.config.toml
-```
-
-### Axum
-
-##### 单应用
-
-```shell
+# Axum
 rnx new --axum # 在当前目录初始化项目
 rnx new --name demo --axum # 创建demo项目
+
 .
-├── src
-│   ├── app
-│   │   ├── cmd
-│   │   ├── hanlder
-│   │   ├── middleware
-│   │   ├── router
-│   │   ├── service
-│   │   └── main.rs
-│   └── infra
-│       ├── cache
-│       ├── code
-│       ├── config
-│       ├── db
-│       ├── logger
-│       ├── middleware
-│       ├── schema
-│       ├── util
-│       └── lib.rs
 ├── Cargo.toml
 ├── Dockerfile
-└── config.toml
+├── app/
+│   ├── Cargo.toml
+│   ├── config.toml
+│   └── src/
+│       ├── cmd/
+│       ├── handler/
+│       ├── middleware/
+│       ├── router/
+│       ├── service/
+│       └── main.rs
+├── domain/
+│   ├── Cargo.toml
+│   └── src/
+│       ├── repo/
+│       ├── schema/
+│       └── lib.rs
+└── infra/
+    ├── Cargo.toml
+    └── src/
+        ├── code/
+        ├── core/
+        ├── middleware/
+        ├── util/
+        └── lib.rs
+
 ```
 
-##### 多应用
+### 多应用
 
 ```shell
+# Salvo
+rnx new --app foo --app bar # 在当前目录初始化项目
+rnx new --name demo --app foo --app bar # 创建demo项目
+
+# Axum
 rnx new --app foo --app bar --axum # 在当前目录初始化项目
 rnx new --name demo --app foo --app bar --axum # 创建demo项目
+
 .
-├── src
-│   ├── app
-│   │   ├── foo
-│   │   │   ├── cmd
-│   │   │   ├── handler
-│   │   │   ├── middleware
-│   │   │   ├── router
-│   │   │   ├── service
-│   │   │   └── main.rs
-│   │   └── bar
-│   │       ├── ...
-│   │       └── main.rs
-│   └── infra
-│       ├── cache
-│       ├── code
-│       ├── config
-│       ├── db
-│       ├── logger
-│       ├── middleware
-│       ├── schema
-│       ├── util
-│       └── lib.rs
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
-├── foo.config.toml
-└── bar.config.toml
+├── app/
+│   ├── foo/
+│   │   ├── Cargo.toml
+│   │   ├── config.toml
+│   │   └── src/
+│   │       ├── cmd/
+│   │       ├── handler/
+│   │       ├── middleware/
+│   │       ├── router/
+│   │       ├── service/
+│   │       └── main.rs
+│   └── bar/
+│       ├── Cargo.toml
+│       ├── config.toml
+│       └── src/
+│           ├── ...
+│           └── main.rs
+├── domain/
+│   ├── Cargo.toml
+│   └── src/
+│       ├── repo/
+│       ├── schema/
+│       └── lib.rs
+└── infra/
+    ├── Cargo.toml
+    └── src/
+        ├── code/
+        ├── core/
+        ├── middleware/
+        ├── util/
+        └── lib.rs
 ```
 
 ## 创建应用
 
 > 多应用项目适用，需在项目根目录执行（即：`Cargo.toml` 所在目录）
 
-### Salvo
-
 ```shell
+# Salvo
 rnx app --name foo --name bar
-.
-├── src
-│   ├── app
-│   │   ├── foo
-│   │   │   ├── cmd
-│   │   │   ├── handler
-│   │   │   ├── middleware
-│   │   │   ├── router
-│   │   │   ├── service
-│   │   │   └── main.rs
-│   │   └── bar
-│   │       ├── ...
-│   │       └── main.rs
-│   └── infra
-│       ├── ...
-│       └── lib.rs
-├── Cargo.toml
-├── foo.dockerfile
-├── bar.dockerfile
-├── foo.config.toml
-└── bar.config.toml
-```
 
-### Axum
-
-```shell
+# Axum
 rnx app --name foo --name bar --axum
+
 .
-├── src
-│   ├── app
-│   │   ├── foo
-│   │   │   ├── cmd
-│   │   │   ├── handler
-│   │   │   ├── middleware
-│   │   │   ├── router
-│   │   │   ├── service
-│   │   │   └── main.rs
-│   │   └── bar
-│   │       ├── ...
-│   │       └── main.rs
-│   └── infra
-│       ├── ...
-│       └── lib.rs
 ├── Cargo.toml
 ├── foo.dockerfile
 ├── bar.dockerfile
-├── foo.config.toml
-└── bar.config.toml
+├── app/
+│   ├── foo/
+│   │   ├── Cargo.toml
+│   │   ├── config.toml
+│   │   └── src/
+│   │       ├── cmd/
+│   │       ├── handler/
+│   │       ├── middleware/
+│   │       ├── router/
+│   │       ├── service/
+│   │       └── main.rs
+│   └── bar/
+│       ├── Cargo.toml
+│       ├── config.toml
+│       └── src/
+│           ├── ...
+│           └── main.rs
+├── domain/
+│   ├── Cargo.toml
+│   └── src/
+│       ├── ...
+│       └── lib.rs
+└── infra/
+    ├── Cargo.toml
+    └── src/
+        ├── ...
+        └── lib.rs
 ```
 
 **Enjoy 😊**

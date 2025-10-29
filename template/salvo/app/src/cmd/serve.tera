@@ -1,12 +1,12 @@
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 
+use infra::core::{config::config, AppState};
 use salvo::{prelude::*, server::ServerHandle};
-use infra::config::config;
 use tokio::signal::unix::{signal, SignalKind};
 
 use crate::router;
 
-pub async fn run() {
+pub async fn run(state: Arc<AppState>) {
     let addr = config().get_int("app.port").unwrap_or(8000);
     let acceptor = TcpListener::new(format!("0.0.0.0:{}", addr)).bind().await;
     let mut server = Server::new(acceptor);
@@ -18,7 +18,7 @@ pub async fn run() {
     // 创建一个任务来处理信号
     tokio::spawn(shutdown_signal(handle));
 
-    server.serve(router::init()).await;
+    server.serve(router::init(state)).await;
 }
 
 async fn shutdown_signal(handle: ServerHandle) {
@@ -29,16 +29,16 @@ async fn shutdown_signal(handle: ServerHandle) {
 
     tokio::select! {
         _ = sigint.recv() => {
-            println!("⌛️ 收到 SIGINT 信号，正在关闭服务...");
+            println!("收到 SIGINT 信号，正在关闭服务...");
         }
         _ = sighup.recv() => {
-            println!("⌛️ 收到 SIGHUP 信号，正在关闭服务...");
+            println!("收到 SIGHUP 信号，正在关闭服务...");
         }
         _ = sigquit.recv() => {
-            println!("⌛️ 收到 SIGQUIT 信号，正在关闭服务...");
+            println!("收到 SIGQUIT 信号，正在关闭服务...");
         }
         _ = sigterm.recv() => {
-            println!("⌛️ 收到 SIGTERM 信号，正在关闭服务...");
+            println!("收到 SIGTERM 信号，正在关闭服务...");
         }
     }
 

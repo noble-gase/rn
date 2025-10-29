@@ -2,9 +2,9 @@ use std::time::Duration;
 
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
 
-use crate::config::config;
+use crate::core::config::config;
 
-pub(super) async fn new(cfg_key: &str) -> anyhow::Result<MySqlPool> {
+pub async fn new(cfg_key: &str) -> anyhow::Result<MySqlPool> {
     let cfg = config();
 
     let dsn = cfg.get_string(&format!("{}.dsn", cfg_key))?;

@@ -1,7 +1,7 @@
 use config::Config;
 use std::{fs, sync::OnceLock};
 
-pub(crate) static C: OnceLock<Config> = OnceLock::new();
+pub static CFG: OnceLock<Config> = OnceLock::new();
 
 pub fn init(cfg_file: &str) {
     let path = fs::canonicalize(cfg_file)
@@ -12,10 +12,10 @@ pub fn init(cfg_file: &str) {
         .build()
         .unwrap_or_else(|e| panic!("Config({}) init failed：{}", cfg_file, e));
 
-    let _ = C.set(cfg);
+    let _ = CFG.set(cfg);
 }
 
 pub fn config() -> &'static Config {
-    C.get()
+    CFG.get()
         .unwrap_or_else(|| panic!("Config is not initialized"))
 }

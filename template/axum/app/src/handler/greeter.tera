@@ -1,8 +1,13 @@
-use axum::Json;
+use std::sync::Arc;
+
+use axum::{extract::State, Json};
 use axum_extra::extract::WithRejection;
 use validator::Validate;
 
-use infra::code::{rejection::IRejection, ApiResult, Code};
+use infra::{
+    code::{rejection::IRejection, ApiResult, Code},
+    core::AppState,
+};
 
 use crate::service::{
     self,
@@ -10,10 +15,11 @@ use crate::service::{
 };
 
 pub async fn hello(
+    State(ctx): State<Arc<AppState>>,
     WithRejection(Json(req), _): IRejection<Json<ReqHello>>,
 ) -> ApiResult<RespHello> {
     if let Err(e) = req.validate() {
         return Err(Code::ErrParams.with_msg(e.to_string()));
     }
-    service::greeter::hello(req).await
+    service::greeter::hello(&ctx, req).await
 }

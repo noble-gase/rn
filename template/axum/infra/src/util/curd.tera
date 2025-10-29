@@ -2,7 +2,7 @@ use sea_query::{
     DeleteStatement, Expr, InsertStatement, MysqlQueryBuilder, SelectStatement, UpdateStatement,
 };
 use sea_query_binder::SqlxBinder;
-use sqlx::{mysql::MySqlRow, Error, FromRow, MySqlPool};
+use sqlx::{mysql::MySqlRow, FromRow, MySqlPool};
 
 /// 插入记录
 ///
@@ -17,7 +17,7 @@ use sqlx::{mysql::MySqlRow, Error, FromRow, MySqlPool};
 ///
 /// curd::create(db::pool(), stmt).await;
 /// ```
-pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> Result<u64, Error> {
+pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> anyhow::Result<u64> {
     // SQL日志
     tracing::info!(SQL = stmt.to_string(MysqlQueryBuilder));
 
@@ -41,7 +41,7 @@ pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> Result<u64, Error>
 ///
 /// curd::update(db::pool(), stmt).await;
 /// ```
-pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> Result<u64, Error> {
+pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> anyhow::Result<u64> {
     // SQL日志
     tracing::info!(SQL = stmt.to_string(MysqlQueryBuilder));
 
@@ -64,7 +64,7 @@ pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> Result<u64, Error>
 ///
 /// curd::delete(db::pool(), stmt).await;
 /// ```
-pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> Result<u64, Error> {
+pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> anyhow::Result<u64> {
     // SQL日志
     tracing::info!(SQL = stmt.to_string(MysqlQueryBuilder));
 
@@ -87,7 +87,7 @@ pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> Result<u64, Error>
 ///
 /// curd::count(db::pool(), stmt).await;
 /// ```
-pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> Result<i64, Error> {
+pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<i64> {
     stmt.clear_selects();
     stmt.clear_order_by();
     // SELECT COUNT(*)
@@ -115,7 +115,7 @@ pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> Result<i64, Err
 ///
 /// curd::find_one::<model::Demo>(db::pool(), stmt).await;
 /// ```
-pub async fn find_one<T>(db: &MySqlPool, mut stmt: SelectStatement) -> Result<Option<T>, Error>
+pub async fn find_one<T>(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
 where
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
@@ -146,7 +146,7 @@ where
 ///
 /// curd::find_all::<model::Demo>(db::pool(), stmt).await;
 /// ```
-pub async fn find_all<T>(db: &MySqlPool, stmt: SelectStatement) -> Result<Vec<T>, Error>
+pub async fn find_all<T>(db: &MySqlPool, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
 where
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
@@ -181,7 +181,7 @@ pub async fn paginate<T>(
     mut stmt: SelectStatement,
     mut page: i32,
     mut size: i32,
-) -> Result<(Vec<T>, i64), Error>
+) -> anyhow::Result<(Vec<T>, i64)>
 where
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {

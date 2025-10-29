@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use infra::code::{ApiResult, OK};
+use infra::{
+    code::{ApiResult, OK},
+    core::AppState,
+};
 
 #[derive(Debug, Validate, Deserialize, Serialize)]
 pub struct ReqHello {
@@ -14,7 +17,10 @@ pub struct RespHello {
     pub message: String,
 }
 
-pub async fn hello(req: ReqHello) -> ApiResult<RespHello> {
+pub async fn hello(ctx: &AppState, req: ReqHello) -> ApiResult<RespHello> {
+    let _ = ctx;
+    // let ret = demo::get_by_id::<model::Demo>(ctx, 1, None).await;
+
     let resp = RespHello {
         message: format!("Hello, {}!", req.name),
     };

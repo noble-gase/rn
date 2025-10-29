@@ -12,6 +12,8 @@ repository = "https://github.com/noble-gase/rn"
 [workspace.dependencies]
 domain = { path = "domain", version = "0.1.0" }
 infra = { path = "infra", version = "0.1.0" }
+anyhow = "1"
+thiserror = "2"
 futures = "0.3"
 tokio = "1"
 clap = "4.5"
@@ -19,8 +21,6 @@ tracing = "0.1"
 tracing-subscriber = "0.3"
 tracing-appender = "0.2"
 hostname = "^0.4"
-anyhow = "1"
-thiserror = "2"
 rand = "0.8"
 base64 = "0.22"
 bcrypt = "0.15"

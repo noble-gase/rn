@@ -3,13 +3,13 @@ pub mod handler;
 pub mod router;
 pub mod service;
 
-use std::panic;
+use std::{panic, sync::Arc};
 
 use clap::Parser;
-use infra::{config, logger};
+use infra::core::{config, logger, AppState};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     let cli = cmd::Cli::parse();
 
     // init config
@@ -22,24 +22,16 @@ async fn main() {
         tracing::error!(error = %info, "panic occurred");
     }));
 
-    init().await;
+    let state = Arc::new(AppState::default());
+    // let state = Arc::new(AppState::new().await?);
+
     match cli.command {
         Some(cmd::Command::Hello { name }) => cmd::hello::run(name),
-        Some(cmd::Command::Serve) => cmd::serve::run().await,
+        Some(cmd::Command::Serve) => cmd::serve::run(state.clone()).await,
         _ => {
             println!("🦀 Welcome to use noble-gase[Axum] scaffold");
         }
     }
-    cleanup().await;
-}
 
-async fn init() {
-    // 初始化数据库
-    // db::init().await;
-    // 初始化Redis
-    // cache::init().await;
-}
-
-async fn cleanup() {
-    // db::close().await;
+    Ok(())
 }

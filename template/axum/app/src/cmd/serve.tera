@@ -1,9 +1,11 @@
-use infra::config::config;
+use std::sync::Arc;
+
+use infra::core::{config::config, AppState};
 use tokio::signal::unix::{signal, SignalKind};
 
 use crate::router;
 
-pub async fn run() {
+pub async fn run(state: Arc<AppState>) {
     let addr = config().get_int("app.port").unwrap_or(8000);
 
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", addr))
@@ -12,7 +14,7 @@ pub async fn run() {
 
     tracing::info!("listening on {}", addr);
 
-    axum::serve(listener, router::init())
+    axum::serve(listener, router::init().with_state(state))
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
@@ -26,16 +28,16 @@ async fn shutdown_signal() {
 
     tokio::select! {
         _ = sigint.recv() => {
-            println!("⌛️ 收到 SIGINT 信号，正在关闭服务...");
+            println!("收到 SIGINT 信号，正在关闭服务...");
         }
         _ = sighup.recv() => {
-            println!("⌛️ 收到 SIGHUP 信号，正在关闭服务...");
+            println!("收到 SIGHUP 信号，正在关闭服务...");
         }
         _ = sigquit.recv() => {
-            println!("⌛️ 收到 SIGQUIT 信号，正在关闭服务...");
+            println!("收到 SIGQUIT 信号，正在关闭服务...");
         }
         _ = sigterm.recv() => {
-            println!("⌛️ 收到 SIGTERM 信号，正在关闭服务...");
+            println!("收到 SIGTERM 信号，正在关闭服务...");
         }
     }
 }

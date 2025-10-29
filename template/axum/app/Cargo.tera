@@ -1,6 +1,6 @@
 [package]
-name = "app"
-description = "app crate"
+name = "{{ app_name }}"
+description = "{{ app_name }} crate"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -9,6 +9,7 @@ repository.workspace = true
 [dependencies]
 domain = { workspace = true }
 infra = { workspace = true }
+anyhow = { workspace = true }
 futures = { workspace = true }
 tokio = { workspace = true, features = ["full"] }
 clap = { workspace = true, features = ["derive"] }

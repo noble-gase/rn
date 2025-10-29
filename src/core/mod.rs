@@ -34,7 +34,7 @@ pub fn is_empty_dir(path: &Path) -> bool {
 
 pub fn build_axum_project(root: &Path, name: String, apps: Vec<String>) {
     let libs = (axum::global(), axum::domain(), axum::infra());
-    let members = gen_members(&apps);
+    let members = gen_members(&apps, Some(vec!["domain".to_string(), "infra".to_string()]));
     build_project(root, name, libs, members);
     // app
     if apps.is_empty() {
@@ -56,7 +56,7 @@ pub fn build_axum_app(root: &Path, apps: Vec<String>) {
 
 pub fn build_salvo_project(root: &Path, name: String, apps: Vec<String>) {
     let libs = (salvo::global(), salvo::domain(), salvo::infra());
-    let members = gen_members(&apps);
+    let members = gen_members(&apps, Some(vec!["domain".to_string(), "infra".to_string()]));
     build_project(root, name, libs, members);
     // app
     if apps.is_empty() {
@@ -130,7 +130,7 @@ fn build_app(root: &Path, name: Option<&str>, template: tera::Tera) {
             None => root.join(filename),
             Some(v) => {
                 if filename == "Dockerfile" {
-                    root.join(format!("{}.{}", v, filename.to_lowercase()).as_str())
+                    root.join(format!("Dockerfile.{}", v).as_str())
                 } else {
                     root.join(format!("{}_{}", v, filename.to_lowercase()).as_str())
                 }
@@ -144,8 +144,15 @@ fn build_app(root: &Path, name: Option<&str>, template: tera::Tera) {
     }
 }
 
-fn gen_members(apps: &Vec<String>) -> String {
-    let mut members = vec!["domain".to_string(), "infra".to_string()];
+pub fn gen_members(apps: &Vec<String>, base: Option<Vec<String>>) -> String {
+    let mut members = Vec::new();
+
+    if let Some(list) = base {
+        for v in list {
+            members.push(v);
+        }
+    }
+
     if apps.is_empty() {
         members.push("app".to_string())
     } else {

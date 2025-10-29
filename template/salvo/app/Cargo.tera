@@ -9,6 +9,7 @@ repository.workspace = true
 [dependencies]
 domain = { workspace = true }
 infra = { workspace = true }
+anyhow = { workspace = true }
 futures = { workspace = true }
 tokio = { workspace = true, features = ["full"] }
 clap = { workspace = true, features = ["derive"] }
@@ -25,5 +26,6 @@ salvo = { workspace = true, features = [
     "http1",
     "http2",
     "http2-cleartext",
+    "affix-state",
 ] }
 kr = { workspace = true }

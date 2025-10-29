@@ -11,14 +11,14 @@ name = "infra"
 path = "src/lib.rs"
 
 [dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
 futures = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true, features = ["json"] }
 tracing-appender = { workspace = true }
 hostname = { workspace = true }
-anyhow = { workspace = true }
-thiserror = { workspace = true }
 rand = { workspace = true }
 base64 = { workspace = true }
 bcrypt = { workspace = true }

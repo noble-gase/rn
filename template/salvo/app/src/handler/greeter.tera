@@ -1,7 +1,12 @@
-use salvo::{handler, Request};
+use std::sync::Arc;
+
+use salvo::{handler, Depot, Request};
 use validator::Validate;
 
-use infra::code::{ApiResult, Code};
+use infra::{
+    code::{ApiResult, Code},
+    core::AppState,
+};
 
 use crate::service::{
     self,
@@ -9,7 +14,7 @@ use crate::service::{
 };
 
 #[handler]
-pub async fn hello(req: &mut Request) -> ApiResult<RespHello> {
+pub async fn hello(depot: &mut Depot, req: &mut Request) -> ApiResult<RespHello> {
     let params = req.parse_json::<ReqHello>().await.map_err(|e| {
         tracing::error!(err = ?e, "req.parse_json");
         Code::ErrParams.with_msg("参数解析出错")
@@ -18,7 +23,8 @@ pub async fn hello(req: &mut Request) -> ApiResult<RespHello> {
         return Err(Code::ErrParams.with_msg(e.to_string()));
     }
 
-    // let iden = req.extensions().get::<Identity>();
+    let ctx = depot.obtain::<Arc<AppState>>().unwrap();
+    // let iden = depot.obtain::<Identity>().unwrap();
 
-    service::greeter::hello(params).await
+    service::greeter::hello(ctx, params).await
 }

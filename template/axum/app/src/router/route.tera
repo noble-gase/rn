@@ -1,7 +1,10 @@
+use std::sync::Arc;
+
 use axum::{routing::post, Router};
+use infra::core::AppState;
 
 use crate::handler::greeter;
 
-pub fn v1() -> Router {
+pub fn v1() -> Router<Arc<AppState>> {
     Router::new().route("/greeter", post(greeter::hello))
 }

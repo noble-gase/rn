@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
 
-use crate::config::config;
+use crate::core::config::config;
 
 pub const EXPIRE_SECONDS: i64 = 86400;
 

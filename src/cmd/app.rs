@@ -1,6 +1,6 @@
 use std::{env, fs};
 
-use crate::core;
+use crate::core::{self, gen_members};
 
 pub fn run(apps: Vec<String>, axum: bool) {
     // 检查Cargo.toml是否存在
@@ -8,6 +8,8 @@ pub fn run(apps: Vec<String>, axum: bool) {
         println!("👿 Cargo.toml does not exist, please confirm!");
         return;
     }
+
+    let members = gen_members(&apps, None);
 
     // 获取当前目录
     let dir = env::current_dir().unwrap().canonicalize().unwrap();
@@ -18,5 +20,8 @@ pub fn run(apps: Vec<String>, axum: bool) {
         core::build_salvo_app(&dir, apps);
     }
 
-    println!("🦀 The app is now created! Please add to workspace members");
+    println!(
+        "🦀 The app is now created! Please add `{}` to workspace members",
+        members
+    );
 }

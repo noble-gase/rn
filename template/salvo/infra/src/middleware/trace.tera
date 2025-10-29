@@ -45,17 +45,18 @@ impl Handler for Trace {
 
         // 解析 Identity
         let token = req.header::<String>(AUTHORIZATION);
-        let id = match token {
+        let iden = match token {
             None => Identity::default(),
             Some(v) => Identity::from_auth_token(v),
         };
-        let id_str = id.to_string();
+        let iden_str = iden.to_string();
 
         // 设置 Identity
-        req.extensions_mut().insert(id);
+        depot.insert("trace_id", trace_id.clone());
+        depot.inject(iden);
 
         // 设置 trace span
-        let span = tracing::info_span!("trace", hostname, trace_id, identity = id_str);
+        let span = tracing::info_span!("trace", hostname, trace_id, identity = iden_str);
         ctrl.call_next(req, depot, resp).instrument(span).await;
         // 设置 Header
         resp.headers_mut().insert(

@@ -1,10 +1,14 @@
-use infra::db::{self, curd};
+use infra::{core::AppState, util::curd};
 use sea_query::{Expr, Query};
-use sqlx::{mysql::MySqlRow, Error, FromRow};
+use sqlx::{mysql::MySqlRow, FromRow};
 
 use crate::schema::table;
 
-pub async fn get_by_id<T>(id: i64, cols: Option<Vec<table::Demo>>) -> Result<Option<T>, Error>
+pub async fn get_by_id<T>(
+    ctx: &AppState,
+    id: i64,
+    cols: Option<Vec<table::Demo>>,
+) -> anyhow::Result<Option<T>>
 where
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
@@ -18,5 +22,5 @@ where
         Some(v) => stmt.columns(v).to_owned(),
     };
 
-    curd::find_one(db::pool(), stmt).await
+    curd::find_one(ctx.db(), stmt).await
 }

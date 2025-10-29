@@ -3,7 +3,7 @@ use std::time::Duration;
 use bb8::ManageConnection;
 use kr::manager::{bb8_redis, bb8_redis_cluster};
 
-use crate::config::config;
+use crate::core::config::config;
 
 pub type SingleConn = bb8_redis::RedisConnectionManager;
 
@@ -25,9 +25,9 @@ impl ManagerFactory for SingleMode {
     type Output = SingleConn;
 
     fn new(cfg_key: &str) -> anyhow::Result<Self::Output> {
-        let params = config().get_string(&format!("{}.addr", cfg_key))?;
+        let dsn = config().get_string(&format!("{}.dsn", cfg_key))?;
 
-        let client = redis::Client::open(params)?;
+        let client = redis::Client::open(dsn)?;
         let mut conn = client.get_connection()?;
         let _ = redis::cmd("PING").query::<String>(&mut conn)?;
 
@@ -43,7 +43,7 @@ impl ManagerFactory for ClusterMode {
 
     fn new(cfg_key: &str) -> anyhow::Result<Self::Output> {
         let nodes = config()
-            .get_array(&format!("{}.addrs", cfg_key))?
+            .get_array(&format!("{}.dsn", cfg_key))?
             .into_iter()
             .map(|v| v.to_string())
             .collect::<Vec<String>>();

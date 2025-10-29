@@ -6,7 +6,7 @@ docker rmi -f img_{{ app_name }}
 {% if app_name == "app" -%}
 docker build -t img_{{ app_name }} .
 {% else %}
-docker build -f {{ app_name }}.dockerfile -t img_{{ app_name }} .
+docker build -f Dockerfile.{{ app_name }} -t img_{{ app_name }} .
 {% endif -%}
 docker image prune -f
 
