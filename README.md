@@ -23,7 +23,7 @@ cargo install rnx
 - 包含 基于 sqlx 和 sea-query 的 curd 封装
 - 支持 Prometheus Metrics 和 Request 中间件
 - 包含 TraceId、认证、请求日志、Panic捕获 中间件
-- 简单好用的 API Result（宏定义错误码）统一输出方式
+- 简单好用的 API Result 统一输出方式
 
 ## 创建项目
 
@@ -60,9 +60,9 @@ rnx new --name demo --axum # 创建demo项目
 └── infra/
     ├── Cargo.toml
     └── src/
-        ├── code/
         ├── core/
         ├── middleware/
+        ├── status/
         ├── util/
         └── lib.rs
 
@@ -109,9 +109,9 @@ rnx new --name demo --app foo --app bar --axum # 创建demo项目
 └── infra/
     ├── Cargo.toml
     └── src/
-        ├── code/
         ├── core/
         ├── middleware/
+        ├── status/
         ├── util/
         └── lib.rs
 ```

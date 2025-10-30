@@ -1,0 +1,25 @@
+use axum::{
+    response::{IntoResponse, Response},
+    Json,
+};
+use serde::Serialize;
+
+use crate::status::ApiBody;
+
+pub struct ApiOK<T>(pub Option<T>)
+where
+    T: Serialize + Send;
+
+impl<T> IntoResponse for ApiOK<T>
+where
+    T: Serialize + Send,
+{
+    fn into_response(self) -> Response {
+        let body = ApiBody {
+            code: 0,
+            msg: "success".to_string(),
+            data: self.0,
+        };
+        Json(body).into_response()
+    }
+}

@@ -1,5 +1,6 @@
 pub mod cmd;
 pub mod handler;
+pub mod middleware;
 pub mod router;
 pub mod service;
 
@@ -9,17 +10,18 @@ use clap::Parser;
 use infra::core::{config, logger, AppState};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     let cli = cmd::Cli::parse();
 
     // init config
-    config::init(&cli.config);
+    config::init(&cli.config)?;
+
     // _guard 必须在 main 函数中才能使日志生效
     let _guard = logger::init();
 
     // catch panic
-    panic::set_hook(Box::new(|info| {
-        tracing::error!(error = %info, "panic occurred");
+    panic::set_hook(Box::new(|e| {
+        tracing::error!(panic = %e);
     }));
 
     let state = Arc::new(AppState::default());
@@ -32,4 +34,6 @@ async fn main() {
             println!("🦀 Welcome to use noble-gase[Salvo] scaffold");
         }
     }
+
+    Ok(())
 }

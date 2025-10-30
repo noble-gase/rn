@@ -146,15 +146,6 @@ pub fn infra() -> Tera {
             "src/lib.rs",
             include_str!("../../template/axum/infra/src/lib.tera"),
         ),
-        // code
-        (
-            "src/code/mod.rs",
-            include_str!("../../template/axum/infra/src/code/mod.tera"),
-        ),
-        (
-            "src/code/rejection.rs",
-            include_str!("../../template/axum/infra/src/code/rejection.tera"),
-        ),
         // core
         (
             "src/core/mod.rs",
@@ -196,6 +187,19 @@ pub fn infra() -> Tera {
         (
             "src/middleware/trace.rs",
             include_str!("../../template/axum/infra/src/middleware/trace.tera"),
+        ),
+        // status
+        (
+            "src/status/mod.rs",
+            include_str!("../../template/axum/infra/src/status/mod.tera"),
+        ),
+        (
+            "src/status/api_ok.rs",
+            include_str!("../../template/axum/infra/src/status/api_ok.tera"),
+        ),
+        (
+            "src/status/api_err.rs",
+            include_str!("../../template/axum/infra/src/status/api_err.tera"),
         ),
         // util
         (

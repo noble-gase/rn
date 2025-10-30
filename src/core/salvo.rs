@@ -152,11 +152,6 @@ pub fn infra() -> Tera {
             "src/lib.rs",
             include_str!("../../template/salvo/infra/src/lib.tera"),
         ),
-        // code
-        (
-            "src/code/mod.rs",
-            include_str!("../../template/salvo/infra/src/code/mod.tera"),
-        ),
         // core
         (
             "src/core/mod.rs",
@@ -198,6 +193,19 @@ pub fn infra() -> Tera {
         (
             "src/middleware/trace.rs",
             include_str!("../../template/salvo/infra/src/middleware/trace.tera"),
+        ),
+        // status
+        (
+            "src/status/mod.rs",
+            include_str!("../../template/salvo/infra/src/status/mod.tera"),
+        ),
+        (
+            "src/status/api_ok.rs",
+            include_str!("../../template/salvo/infra/src/status/api_ok.tera"),
+        ),
+        (
+            "src/status/api_err.rs",
+            include_str!("../../template/salvo/infra/src/status/api_err.tera"),
         ),
         // util
         (

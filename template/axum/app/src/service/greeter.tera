@@ -2,13 +2,13 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use infra::{
-    code::{ApiResult, OK},
     core::AppState,
+    status::{api_ok::ApiOK, ApiResult},
 };
 
 #[derive(Debug, Validate, Deserialize, Serialize)]
 pub struct ReqHello {
-    #[validate(length(min = 1, message = "名称必填"))]
+    #[validate(length(min = 1, message = "required"))]
     pub name: String,
 }
 
@@ -19,10 +19,12 @@ pub struct RespHello {
 
 pub async fn hello(ctx: &AppState, req: ReqHello) -> ApiResult<RespHello> {
     let _ = ctx;
-    // let ret = demo::get_by_id::<model::Demo>(ctx, 1, None).await;
+    // let ret = demo::get_by_id::<model::Demo>(ctx, 1, None)
+    //     .await
+    //     .with_context(|| make_ctx("demo::get_by_id failed"))?;
 
     let resp = RespHello {
         message: format!("Hello, {}!", req.name),
     };
-    Ok(OK(Some(resp)))
+    Ok(ApiOK(Some(resp)))
 }

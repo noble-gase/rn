@@ -12,7 +12,7 @@
 - 包含 基于 sqlx 和 sea-query 的 curd 封装
 - 支持 Prometheus Metrics 和 Request 中间件
 - 包含 Trace、认证、请求日志、Panic捕获 中间价
-- 简单好用的 API Result（宏定义错误码）统一输出方式
+- 简单好用的 API Result 统一输出方式
 
 #### 1. 模块说明
 

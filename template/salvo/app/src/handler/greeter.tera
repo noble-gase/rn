@@ -1,11 +1,13 @@
 use std::sync::Arc;
 
+use anyhow::Context;
+use kr::make_ctx;
 use salvo::{handler, Depot, Request};
 use validator::Validate;
 
 use infra::{
-    code::{ApiResult, Code},
     core::AppState,
+    status::{api_err::ApiErr, ApiResult},
 };
 
 use crate::service::{
@@ -15,12 +17,13 @@ use crate::service::{
 
 #[handler]
 pub async fn hello(depot: &mut Depot, req: &mut Request) -> ApiResult<RespHello> {
-    let params = req.parse_json::<ReqHello>().await.map_err(|e| {
-        tracing::error!(err = ?e, "req.parse_json");
-        Code::ErrParams.with_msg("参数解析出错")
-    })?;
+    let params = req
+        .parse_json::<ReqHello>()
+        .await
+        .with_context(|| make_ctx("request body parsed failed"))?;
+
     if let Err(e) = params.validate() {
-        return Err(Code::ErrParams.with_msg(e.to_string()));
+        return Err(ApiErr::InvalidParams(e.to_string()));
     }
 
     let ctx = depot.obtain::<Arc<AppState>>().unwrap();

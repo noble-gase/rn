@@ -1,0 +1,24 @@
+use salvo::{prelude::*, Depot, Request, Response, Writer};
+use serde::Serialize;
+
+use crate::status::ApiBody;
+
+pub struct ApiOK<T>(pub Option<T>)
+where
+    T: Serialize + Send;
+
+#[async_trait]
+impl<T> Writer for ApiOK<T>
+where
+    T: Serialize + Send,
+{
+    async fn write(self, _req: &mut Request, _depot: &mut Depot, resp: &mut Response) {
+        let body = ApiBody {
+            code: 0,
+            msg: "success".to_string(),
+            data: self.0,
+        };
+        resp.status_code(StatusCode::OK);
+        resp.render(Json(body));
+    }
+}

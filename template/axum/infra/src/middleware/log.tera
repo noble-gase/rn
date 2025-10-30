@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use anyhow::Context;
 use axum::{
     body::Body,
     extract::Request,
@@ -8,10 +9,10 @@ use axum::{
 };
 use http_body_util::BodyExt;
 use hyper::HeaderMap;
-use kr::times;
+use kr::{make_ctx, times};
 use serde_json::Value;
 
-use crate::code::Code;
+use crate::status::api_err::ApiErr;
 
 const MAX_LOG_SIZE: usize = 32 << 10; // 32KB
 
@@ -31,7 +32,7 @@ pub async fn handle(request: Request, next: Next) -> Response {
     let duration = (times::now(None) - enter_time).to_string();
 
     tracing::info!(
-        message = req_uri,
+        uri = req_uri,
         method = req_method,
         headers = req_header,
         request = req_body,
@@ -59,18 +60,16 @@ fn header_to_string(h: &HeaderMap) -> String {
 async fn drain_body(
     request: Request,
     next: Next,
-) -> Result<(Response, (Option<String>, Option<String>)), Code> {
+) -> Result<(Response, (Option<String>, Option<String>)), ApiErr> {
     // Request
     // 取出 Body
     let (req_parts, req_body) = request.into_parts();
     // this wont work if the body is a long running stream
-    let req_bytes = match req_body.collect().await {
-        Ok(v) => v.to_bytes(),
-        Err(e) => {
-            tracing::error!(err = ?e, "[request] body.collect");
-            return Err(Code::ErrSystem);
-        }
-    };
+    let req_bytes = req_body
+        .collect()
+        .await
+        .with_context(|| make_ctx("request body collect failed"))?
+        .to_bytes();
     // 处理 Body
     let req_body_str = std::str::from_utf8(&req_bytes[..req_bytes.len().min(MAX_LOG_SIZE)])
         .map(|s| {
@@ -92,13 +91,11 @@ async fn drain_body(
     // 取出 Body
     let (resp_parts, resp_body) = response.into_parts();
     // this wont work if the body is a long running stream
-    let resp_bytes = match resp_body.collect().await {
-        Ok(v) => v.to_bytes(),
-        Err(e) => {
-            tracing::error!(err = ?e, "[response] body.collect");
-            return Err(Code::ErrSystem.with_msg(e.to_string()));
-        }
-    };
+    let resp_bytes = resp_body
+        .collect()
+        .await
+        .with_context(|| make_ctx("response body collect failed"))?
+        .to_bytes();
     // 处理 Body
     let resp_body_str = std::str::from_utf8(&resp_bytes[..resp_bytes.len().min(MAX_LOG_SIZE)])
         .map(|s| s.to_string())

@@ -1,17 +1,17 @@
 use std::collections::HashMap;
 
+use anyhow::Context;
 use http_body_util::BodyExt;
 use hyper::HeaderMap;
-use kr::times;
+use kr::{make_ctx, times};
 use salvo::{
     async_trait,
     http::{ReqBody, ResBody},
-    writing::Json,
-    Depot, FlowCtrl, Handler, Request, Response,
+    Depot, FlowCtrl, Handler, Request, Response, Writer,
 };
 use serde_json::Value;
 
-use crate::code::Code;
+use crate::status::api_err::ApiErr;
 
 const MAX_LOG_SIZE: usize = 32 << 10; // 32KB
 
@@ -40,12 +40,14 @@ impl Handler for Log {
         let req_header = header_to_string(req.headers());
 
         // 获取请求体
-        let (req_body, code) = drain_req_body(req).await;
-        if let Some(v) = code {
-            resp.render(Json(v.to_status()));
-            ctrl.skip_rest();
-            return;
-        }
+        let req_body = match drain_req_body(req).await {
+            Err(e) => {
+                e.write(req, depot, resp).await;
+                ctrl.skip_rest();
+                return;
+            }
+            Ok(v) => v,
+        };
         ctrl.call_next(req, depot, resp).await;
 
         // 获取响应体
@@ -57,7 +59,7 @@ impl Handler for Log {
 
         // 日志记录
         tracing::info!(
-            message = req_uri,
+            uri = req_uri,
             method = req_method,
             headers = req_header,
             request = req_body,
@@ -82,17 +84,15 @@ fn header_to_string(h: &HeaderMap) -> String {
     serde_json::to_string(&map).unwrap_or_else(|_| String::from("<none>"))
 }
 
-async fn drain_req_body(req: &mut Request) -> (Option<String>, Option<Code>) {
+async fn drain_req_body(req: &mut Request) -> Result<Option<String>, ApiErr> {
     // 取出 Body
     let body = req.take_body();
     // this wont work if the body is a long running stream
-    let bytes = match body.collect().await {
-        Ok(v) => v.to_bytes(),
-        Err(e) => {
-            tracing::error!(err = ?e, "[request] body.collect");
-            return (None, Some(Code::ErrSystem));
-        }
-    };
+    let bytes = body
+        .collect()
+        .await
+        .with_context(|| make_ctx("request body collect failed"))?
+        .to_bytes();
 
     // 处理 Body
     let body_str = std::str::from_utf8(&bytes[..bytes.len().min(MAX_LOG_SIZE)])
@@ -110,7 +110,8 @@ async fn drain_req_body(req: &mut Request) -> (Option<String>, Option<Code>) {
 
     // 重置 Body
     req.replace_body(ReqBody::Once(bytes));
-    (body_str, None)
+
+    Ok(body_str)
 }
 
 async fn drain_resp_body(resp: &mut Response) -> Option<String> {

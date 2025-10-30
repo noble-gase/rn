@@ -18,4 +18,4 @@ options = { max_size = 20, min_idle = 10, conn_timeout = 10, idle_timeout = 300,
 
 [log]
 path = "logs"
-filename = "tracing.log"
+filename = "app.log"
