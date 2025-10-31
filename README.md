@@ -51,7 +51,7 @@ rnx new --name demo --axum # 创建demo项目
 │       ├── router/
 │       ├── service/
 │       └── main.rs
-├── domain/
+├── repo/
 │   ├── Cargo.toml
 │   └── src/
 │       ├── repo/
@@ -100,7 +100,7 @@ rnx new --name demo --app foo --app bar --axum # 创建demo项目
 │       └── src/
 │           ├── ...
 │           └── main.rs
-├── domain/
+├── repo/
 │   ├── Cargo.toml
 │   └── src/
 │       ├── repo/
@@ -148,7 +148,7 @@ rnx app --name foo --name bar --axum
 │       └── src/
 │           ├── ...
 │           └── main.rs
-├── domain/
+├── repo/
 │   ├── Cargo.toml
 │   └── src/
 │       ├── ...

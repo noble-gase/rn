@@ -1,13 +1,13 @@
 [package]
-name = "domain"
-description = "domain crate"
+name = "repo"
+description = "repo crate"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 repository.workspace = true
 
 [lib]
-name = "domain"
+name = "repo"
 path = "src/lib.rs"
 
 [dependencies]

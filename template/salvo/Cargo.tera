@@ -5,13 +5,13 @@ members = {{ members }}
 [workspace.package]
 description = "Rust api build with rnx"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 authors = ["ShengHui <847713844@qq.com>"]
 repository = "https://github.com/noble-gase/rn"
 
 [workspace.dependencies]
-domain = { path = "domain", version = "0.1.0" }
 infra = { path = "infra", version = "0.1.0" }
+repo = { path = "repo", version = "0.1.0" }
 anyhow = "1"
 thiserror = "2"
 futures = "0.3"
@@ -30,6 +30,10 @@ config = "0.14"
 time = "0.3"
 bb8 = "0.9"
 uuid = "1.18"
+sqlx = "0.8"
+redis = "0.32"
+sea-query = "0.32"
+sea-query-binder = "0.7"
 prometheus = "0.14"
 validator = "0.16"
 hyper = "1"
@@ -37,8 +41,4 @@ http = "1"
 http-body = "1"
 http-body-util = "0.1"
 salvo = "0.75"
-sqlx = "0.8"
-redis = "0.32"
-sea-query = "0.32"
-sea-query-binder = "0.7"
 kr = "0.6"

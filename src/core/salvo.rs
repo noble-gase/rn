@@ -97,47 +97,6 @@ pub fn app() -> Tera {
     tera
 }
 
-pub fn domain() -> Tera {
-    let mut tera = Tera::default();
-    // 使用 include_str! 宏将模板文件嵌入到二进制文件中
-    tera.add_raw_templates(vec![
-        // Cargo.toml
-        (
-            "Cargo.toml",
-            include_str!("../../template/salvo/domain/Cargo.tera"),
-        ),
-        // lib.rs
-        (
-            "src/lib.rs",
-            include_str!("../../template/salvo/domain/src/lib.tera"),
-        ),
-        // repo
-        (
-            "src/repo/mod.rs",
-            include_str!("../../template/salvo/domain/src/repo/mod.tera"),
-        ),
-        (
-            "src/repo/demo.rs",
-            include_str!("../../template/salvo/domain/src/repo/demo.tera"),
-        ),
-        // schema
-        (
-            "src/schema/mod.rs",
-            include_str!("../../template/salvo/domain/src/schema/mod.tera"),
-        ),
-        (
-            "src/schema/model.rs",
-            include_str!("../../template/salvo/domain/src/schema/model.tera"),
-        ),
-        (
-            "src/schema/table.rs",
-            include_str!("../../template/salvo/domain/src/schema/table.tera"),
-        ),
-    ])
-    .unwrap();
-    tera
-}
-
 pub fn infra() -> Tera {
     let mut tera = Tera::default();
     // 使用 include_str! 宏将模板文件嵌入到二进制文件中
@@ -223,6 +182,47 @@ pub fn infra() -> Tera {
         (
             "src/util/identity.rs",
             include_str!("../../template/salvo/infra/src/util/identity.tera"),
+        ),
+    ])
+    .unwrap();
+    tera
+}
+
+pub fn repo() -> Tera {
+    let mut tera = Tera::default();
+    // 使用 include_str! 宏将模板文件嵌入到二进制文件中
+    tera.add_raw_templates(vec![
+        // Cargo.toml
+        (
+            "Cargo.toml",
+            include_str!("../../template/salvo/repo/Cargo.tera"),
+        ),
+        // lib.rs
+        (
+            "src/lib.rs",
+            include_str!("../../template/salvo/repo/src/lib.tera"),
+        ),
+        // dao
+        (
+            "src/dao/mod.rs",
+            include_str!("../../template/salvo/repo/src/dao/mod.tera"),
+        ),
+        (
+            "src/dao/demo.rs",
+            include_str!("../../template/salvo/repo/src/dao/demo.tera"),
+        ),
+        // schema
+        (
+            "src/schema/mod.rs",
+            include_str!("../../template/salvo/repo/src/schema/mod.tera"),
+        ),
+        (
+            "src/schema/model.rs",
+            include_str!("../../template/salvo/repo/src/schema/model.tera"),
+        ),
+        (
+            "src/schema/table.rs",
+            include_str!("../../template/salvo/repo/src/schema/table.tera"),
         ),
     ])
     .unwrap();

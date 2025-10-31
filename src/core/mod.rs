@@ -33,8 +33,8 @@ pub fn is_empty_dir(path: &Path) -> bool {
 // --------------------------- axum ---------------------------
 
 pub fn build_axum_project(root: &Path, name: String, apps: Vec<String>) {
-    let libs = (axum::global(), axum::domain(), axum::infra());
-    let members = gen_members(&apps, Some(vec!["domain".to_string(), "infra".to_string()]));
+    let libs = (axum::global(), axum::infra(), axum::repo());
+    let members = gen_members(&apps, Some(vec!["infra".to_string(), "repo".to_string()]));
     build_project(root, name, libs, members);
     // app
     if apps.is_empty() {
@@ -55,8 +55,8 @@ pub fn build_axum_app(root: &Path, apps: Vec<String>) {
 // --------------------------- salvo ---------------------------
 
 pub fn build_salvo_project(root: &Path, name: String, apps: Vec<String>) {
-    let libs = (salvo::global(), salvo::domain(), salvo::infra());
-    let members = gen_members(&apps, Some(vec!["domain".to_string(), "infra".to_string()]));
+    let libs = (salvo::global(), salvo::infra(), salvo::repo());
+    let members = gen_members(&apps, Some(vec!["infra".to_string(), "repo".to_string()]));
     build_project(root, name, libs, members);
     // app
     if apps.is_empty() {
@@ -82,7 +82,7 @@ fn build_project(
     libs: (tera::Tera, tera::Tera, tera::Tera),
     members: String,
 ) {
-    let (tera_global, tera_domain, tera_infra) = libs;
+    let (tera_global, tera_infra, tera_repo) = libs;
 
     let mut ctx = Context::new();
     ctx.insert("name", &name);
@@ -93,10 +93,10 @@ fn build_project(
 
     // global
     gen_files(&ctx, root, vec![], tera_global);
-    // domain
-    gen_files(&ctx, root, vec!["domain"], tera_domain);
     // infra
     gen_files(&ctx, root, vec!["infra"], tera_infra);
+    // repo
+    gen_files(&ctx, root, vec!["repo"], tera_repo);
 }
 
 fn build_app(root: &Path, name: Option<&str>, template: tera::Tera) {

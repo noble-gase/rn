@@ -7,8 +7,8 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-domain = { workspace = true }
 infra = { workspace = true }
+repo = { workspace = true }
 anyhow = { workspace = true }
 futures = { workspace = true }
 tokio = { workspace = true, features = ["full"] }

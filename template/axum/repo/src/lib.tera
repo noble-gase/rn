@@ -1,2 +1,2 @@
-pub mod repo;
+pub mod dao;
 pub mod schema;

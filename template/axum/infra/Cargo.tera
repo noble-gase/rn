@@ -28,6 +28,10 @@ config = { workspace = true }
 time = { workspace = true }
 bb8 = { workspace = true }
 uuid = { workspace = true, features = ["v4"] }
+sqlx = { workspace = true }
+redis = { workspace = true, features = ["cluster", "cluster-async"] }
+sea-query = { workspace = true }
+sea-query-binder = { workspace = true, features = ["sqlx-mysql"] }
 prometheus = { workspace = true, features = ["process"] }
 validator = { workspace = true, features = ["derive"] }
 hyper = { workspace = true }
@@ -37,8 +41,4 @@ http-body-util = { workspace = true }
 tower-http = { workspace = true }
 axum = { workspace = true }
 axum-extra = { workspace = true }
-sqlx = { workspace = true }
-redis = { workspace = true, features = ["cluster", "cluster-async"] }
-sea-query = { workspace = true }
-sea-query-binder = { workspace = true, features = ["sqlx-mysql"] }
 kr = { workspace = true }
