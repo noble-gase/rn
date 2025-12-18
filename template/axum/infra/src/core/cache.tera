@@ -7,7 +7,6 @@ use crate::core::config::config;
 
 pub type SingleConn = bb8_redis::RedisConnectionManager;
 
-#[allow(dead_code)]
 pub type ClusterConn = bb8_redis_cluster::RedisClusterManager;
 
 pub trait RedisFactory {
@@ -32,7 +31,6 @@ impl RedisFactory for Single {
     }
 }
 
-#[allow(dead_code)]
 pub struct Cluster;
 
 impl RedisFactory for Cluster {
