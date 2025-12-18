@@ -1,3 +1,2 @@
-pub mod curd;
 pub mod helper;
 pub mod identity;
