@@ -1,6 +1,6 @@
-use infra::{core::AppState, util::curd};
+use infra::{core::AppState, curd::mysql};
 use sea_query::{Expr, Query};
-use sqlx::{mysql::MySqlRow, FromRow};
+use sqlx::{FromRow, mysql::MySqlRow};
 
 use crate::schema::table;
 
@@ -22,5 +22,5 @@ where
         Some(v) => stmt.columns(v).to_owned(),
     };
 
-    curd::find_one(ctx.db(), stmt).await
+    mysql::find_one(ctx.db(), stmt).await
 }

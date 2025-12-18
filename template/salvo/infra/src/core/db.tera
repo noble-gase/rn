@@ -1,10 +1,66 @@
 use std::time::Duration;
 
-use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
+use sqlx::{
+    Database, MySql, Pool, Postgres, Sqlite, mysql::MySqlPoolOptions, pool::PoolOptions,
+    postgres::PgPoolOptions, sqlite::SqlitePoolOptions,
+};
 
 use crate::core::config::config;
 
-pub async fn new(cfg_key: &str) -> anyhow::Result<MySqlPool> {
+pub trait DBFactory {
+    type Output: Database;
+
+    fn build() -> PoolOptions<Self::Output>;
+}
+
+pub struct MySQL;
+
+impl DBFactory for MySQL {
+    type Output = MySql;
+
+    fn build() -> PoolOptions<Self::Output> {
+        MySqlPoolOptions::new()
+    }
+}
+
+pub struct PgSQL;
+
+impl DBFactory for PgSQL {
+    type Output = Postgres;
+
+    fn build() -> PoolOptions<Self::Output> {
+        PgPoolOptions::new()
+    }
+}
+
+pub struct SQLite;
+
+impl DBFactory for SQLite {
+    type Output = Sqlite;
+
+    fn build() -> PoolOptions<Self::Output> {
+        SqlitePoolOptions::new()
+    }
+}
+
+/// 生成 DB 连接池
+///
+/// # Examples
+///
+/// ```
+/// // [MySQL] dsn = "user:pass@tcp(host:3306)/dbname?timeout=10s&charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local"
+/// db::new::<db::MySQL>("config-key").await;
+///
+/// // [PgSQL] dsn = "postgres://user:pass@host:5432/dbname?sslmode=disable"
+/// db::new::<db::PgSQL>("config-key").await;
+///
+/// // [SQLite] dsn = "file::memory:?cache=shared"
+/// db::new::<db::SQLite>("config-key").await;
+/// ```
+pub async fn new<T>(cfg_key: &str) -> anyhow::Result<Pool<T::Output>>
+where
+    T: DBFactory,
+{
     let cfg = config();
 
     let dsn = cfg.get_string(&format!("{}.dsn", cfg_key))?;
@@ -25,7 +81,7 @@ pub async fn new(cfg_key: &str) -> anyhow::Result<MySqlPool> {
         .get_int(&format!("{}.options.max_lifetime", cfg_key))
         .unwrap_or(600);
 
-    let pool = MySqlPoolOptions::new()
+    let pool = T::build()
         .min_connections(min_conns as u32)
         .max_connections(max_conns as u32)
         .acquire_timeout(Duration::from_secs(conn_timeout as u64))

@@ -10,21 +10,18 @@ pub type SingleConn = bb8_redis::RedisConnectionManager;
 #[allow(dead_code)]
 pub type ClusterConn = bb8_redis_cluster::RedisClusterManager;
 
-pub trait ManagerFactory {
-    type Output: ManageConnection<Error: std::error::Error + Send + Sync + 'static>
-        + Send
-        + Sync
-        + 'static;
+pub trait RedisFactory {
+    type Output: ManageConnection<Error: std::error::Error + Send + Sync + 'static>;
 
-    fn new(cfg_key: &str) -> anyhow::Result<Self::Output>;
+    fn build(cfg_key: &str) -> anyhow::Result<Self::Output>;
 }
 
-pub struct SingleMode;
+pub struct Single;
 
-impl ManagerFactory for SingleMode {
+impl RedisFactory for Single {
     type Output = SingleConn;
 
-    fn new(cfg_key: &str) -> anyhow::Result<Self::Output> {
+    fn build(cfg_key: &str) -> anyhow::Result<Self::Output> {
         let dsn = config().get_string(&format!("{}.dsn", cfg_key))?;
 
         let client = redis::Client::open(dsn)?;
@@ -36,12 +33,12 @@ impl ManagerFactory for SingleMode {
 }
 
 #[allow(dead_code)]
-pub struct ClusterMode;
+pub struct Cluster;
 
-impl ManagerFactory for ClusterMode {
+impl RedisFactory for Cluster {
     type Output = ClusterConn;
 
-    fn new(cfg_key: &str) -> anyhow::Result<Self::Output> {
+    fn build(cfg_key: &str) -> anyhow::Result<Self::Output> {
         let nodes = config()
             .get_array(&format!("{}.dsn", cfg_key))?
             .into_iter()
@@ -61,17 +58,17 @@ impl ManagerFactory for ClusterMode {
 /// # Examples
 ///
 /// ```
-/// // [single] config key : redis
-/// redis_pool::new::<redis_pool::SingleMode>("redis").await;
+/// // [single] dsn = "redis://127.0.0.1:6379/0"
+/// cache::new::<cache::Single>("config-key").await;
 ///
-/// // [cluster] config key : redis-cluster
-/// redis_pool::new::<redis_pool::ClusterMode>("redis-cluster").await;
+/// // [cluster] dsn = ["redis://127.0.0.1:6379"]
+/// cache::new::<cache::Cluster>("config-key").await;
 /// ```
 pub async fn new<T>(cfg_key: &str) -> anyhow::Result<bb8::Pool<T::Output>>
 where
-    T: ManagerFactory,
+    T: RedisFactory,
 {
-    let manager = T::new(cfg_key)?;
+    let manager = T::build(cfg_key)?;
 
     let cfg = config();
 

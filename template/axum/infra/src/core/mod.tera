@@ -1,21 +1,23 @@
+pub mod cache;
 pub mod config;
 pub mod db;
 pub mod logger;
-pub mod redis_pool;
 
 use anyhow::Context;
 
 #[derive(Clone, Default)]
 pub struct AppState {
     db_default: Option<sqlx::MySqlPool>,
-    redis_default: Option<bb8::Pool<redis_pool::SingleConn>>,
+    redis_default: Option<bb8::Pool<cache::SingleConn>>,
 }
 
 impl AppState {
     pub async fn new() -> anyhow::Result<Self> {
-        let db_default = db::new("db").await.context("DB(default) init failed")?;
+        let db_default = db::new::<db::MySQL>("db")
+            .await
+            .context("DB(default) init failed")?;
 
-        let redis_default = redis_pool::new::<redis_pool::SingleMode>("redis")
+        let redis_default = cache::new::<cache::Single>("redis")
             .await
             .context("Redis(default) init failed")?;
 
@@ -31,7 +33,7 @@ impl AppState {
             .expect("DB(default) is None (forgotten initialize?)")
     }
 
-    pub fn redis(&self) -> &bb8::Pool<redis_pool::SingleConn> {
+    pub fn redis(&self) -> &bb8::Pool<cache::SingleConn> {
         self.redis_default
             .as_ref()
             .expect("Redis(default) is None (forgotten initialize?)")
