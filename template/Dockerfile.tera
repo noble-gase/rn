@@ -21,7 +21,7 @@ RUN cargo build -p {{ app_name }} --release
 # runtime stage
 FROM debian:trixie-slim
 
-WORKDIR /usr/local/bin/
+WORKDIR /usr/local/bin
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
