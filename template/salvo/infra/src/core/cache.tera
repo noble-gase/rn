@@ -57,16 +57,16 @@ impl RedisFactory for Cluster {
 ///
 /// ```
 /// // [single] dsn = "redis://127.0.0.1:6379/0"
-/// cache::new::<cache::Single>("config-key").await;
+/// let x = cache::new::<cache::Single>("config-key").await;
 ///
 /// // [cluster] dsn = ["redis://127.0.0.1:6379"]
-/// cache::new::<cache::Cluster>("config-key").await;
+/// let x = cache::new::<cache::Cluster>("config-key").await;
 /// ```
-pub async fn new<T>(cfg_key: &str) -> anyhow::Result<bb8::Pool<T::Output>>
+pub async fn new<F>(cfg_key: &str) -> anyhow::Result<bb8::Pool<F::Output>>
 where
-    T: RedisFactory,
+    F: RedisFactory,
 {
-    let manager = T::build(cfg_key)?;
+    let manager = F::build(cfg_key)?;
 
     let cfg = config();
 

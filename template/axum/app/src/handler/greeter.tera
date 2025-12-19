@@ -18,7 +18,7 @@ pub async fn hello(
     Json(req): Json<ReqHello>,
 ) -> ApiResult<RespHello> {
     if let Err(e) = req.validate() {
-        return Err(ApiErr::InvalidParams(e.to_string()));
+        return Err(ApiErr::Params(e.to_string()));
     }
     service::greeter::hello(&ctx, req).await
 }

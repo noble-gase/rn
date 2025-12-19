@@ -15,7 +15,7 @@ use sqlx::{FromRow, MySqlPool, mysql::MySqlRow};
 ///     .values_panic(["demo".into()])
 ///     .to_owned();
 ///
-/// mysql::create(&pool, stmt).await
+/// let ret = mysql::create(&pool, stmt).await;
 /// ```
 pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> anyhow::Result<u64> {
     // SQL日志
@@ -39,7 +39,7 @@ pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> anyhow::Result<u64
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// mysql::update(&pool, stmt).await
+/// let ret = mysql::update(&pool, stmt).await;
 /// ```
 pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> anyhow::Result<u64> {
     // SQL日志
@@ -62,7 +62,7 @@ pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> anyhow::Result<u64
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// mysql::delete(&pool, stmt).await
+/// let ret = mysql::delete(&pool, stmt).await;
 /// ```
 pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> anyhow::Result<u64> {
     // SQL日志
@@ -85,7 +85,7 @@ pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> anyhow::Result<u64
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// mysql::count(&pool, stmt).await
+/// let ret = mysql::count(&pool, stmt).await;
 /// ```
 pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<i64> {
     stmt.clear_selects();
@@ -113,7 +113,7 @@ pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// mysql::find_one::<model::Demo>(&pool, stmt).await
+/// let ret = mysql::find_one::<model::Demo>(&pool, stmt).await;
 /// ```
 pub async fn find_one<T>(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
 where
@@ -144,7 +144,7 @@ where
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// mysql::find_all::<model::Demo>(&pool, stmt).await
+/// let ret = mysql::find_all::<model::Demo>(&pool, stmt).await;
 /// ```
 pub async fn find_all<T>(db: &MySqlPool, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
 where
@@ -174,7 +174,7 @@ where
 ///     .order_by(table::Demo::Id, Order::Desc)
 ///     .to_owned();
 ///
-/// mysql::paginate::<model::Demo>(&pool, stmt, 1, 10).await
+/// let ret = mysql::paginate::<model::Demo>(&pool, stmt, 1, 10).await;
 /// ```
 pub async fn paginate<T>(
     db: &MySqlPool,

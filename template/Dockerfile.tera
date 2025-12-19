@@ -1,26 +1,34 @@
-FROM rust:1.87 as builder
+# build stage
+FROM rust:1.92 AS builder
 
 WORKDIR /project
 
+RUN mkdir -p /usr/local/cargo && \
+    cat > /usr/local/cargo/config.toml << 'EOF'
+[source.crates-io]
+replace-with = "rsproxy"
+
+[source.rsproxy]
+registry = "sparse+https://rsproxy.cn/index/"
+
+[registries.rsproxy]
+index = "sparse+https://rsproxy.cn/index/"
+EOF
+
 COPY . .
+RUN cargo build -p {{ app_name }} --release
 
-{% if app_name == "app" -%}
-RUN cargo build --release
-{% else %}
-RUN cargo build --bin {{ app_name }} --release
-{% endif -%}
+# runtime stage
+FROM debian:trixie-slim
 
-FROM debian:bullseye-slim
+WORKDIR /usr/local/bin/
 
-WORKDIR /bin
-
-# Note: Some infra libraries may need to install the extra-runtime-dependencies.
-# RUN apt-get update && apt-get install -y extra-runtime-dependencies && rm -rf /var/lib/apt/lists/*
-
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /project/target/release/{{ app_name }} .
 
 EXPOSE 8000
 
-ENTRYPOINT ["./{{ app_name }}"]
-
+ENTRYPOINT ["{{ app_name }}"]
 CMD ["--config", "/data/config.toml", "serve"]

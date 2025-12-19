@@ -48,18 +48,18 @@ impl DBFactory for SQLite {
 /// # Examples
 ///
 /// ```
-/// // [MySQL] dsn = "user:pass@tcp(host:3306)/dbname?timeout=10s&charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local"
-/// db::new::<db::MySQL>("config-key").await;
+/// // [MySQL] dsn = "mysql://username:password@host:3306/dbname"
+/// let x = db::new::<db::MySQL>("config-key").await;
 ///
-/// // [PgSQL] dsn = "postgres://user:pass@host:5432/dbname?sslmode=disable"
-/// db::new::<db::PgSQL>("config-key").await;
+/// // [PgSQL] dsn = "postgres://username:password@host:5432/dbname"
+/// let x = db::new::<db::PgSQL>("config-key").await;
 ///
-/// // [SQLite] dsn = "file::memory:?cache=shared"
-/// db::new::<db::SQLite>("config-key").await;
+/// // [SQLite] dsn = "sqlite::memory:"
+/// let x = db::new::<db::SQLite>("config-key").await;
 /// ```
-pub async fn new<T>(cfg_key: &str) -> anyhow::Result<Pool<T::Output>>
+pub async fn new<F>(cfg_key: &str) -> anyhow::Result<Pool<F::Output>>
 where
-    T: DBFactory,
+    F: DBFactory,
 {
     let cfg = config();
 
@@ -81,7 +81,7 @@ where
         .get_int(&format!("{}.options.max_lifetime", cfg_key))
         .unwrap_or(600);
 
-    let pool = T::build()
+    let pool = F::build()
         .min_connections(min_conns as u32)
         .max_connections(max_conns as u32)
         .acquire_timeout(Duration::from_secs(conn_timeout as u64))

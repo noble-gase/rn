@@ -9,7 +9,7 @@ use crate::status::ApiBody;
 #[derive(Debug, Error)]
 pub enum ApiErr {
     #[error("invalid parameters: {0}")]
-    InvalidParams(String),
+    Params(String),
 
     #[error("unauthorized")]
     Unauthorized,
@@ -21,25 +21,25 @@ pub enum ApiErr {
     Panic,
 
     #[error("internal server error")]
-    Internal(#[from] anyhow::Error),
+    System(#[from] anyhow::Error),
 }
 
 impl ApiErr {
     // 映射到业务错误码
     pub fn code(&self) -> i32 {
         match self {
-            ApiErr::InvalidParams(_) => 10000,
+            ApiErr::Params(_) => 10000,
             ApiErr::Unauthorized => 20000,
             ApiErr::NotFound(_) => 40000,
             ApiErr::Panic => 50000,
-            ApiErr::Internal(_) => 50000,
+            ApiErr::System(_) => 50000,
         }
     }
 }
 
 impl IntoResponse for ApiErr {
     fn into_response(self) -> Response {
-        if let ApiErr::Internal(e) = &self {
+        if let ApiErr::System(e) = &self {
             tracing::error!(error = ?e)
         }
         let body = ApiBody::<()> {

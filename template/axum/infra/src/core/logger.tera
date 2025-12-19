@@ -37,7 +37,7 @@ pub fn init() -> WorkerGuard {
                 Level::INFO
             };
 
-            let appender = if cfg.get_string("app.env").unwrap_or(String::from("dev")) == "dev" {
+            let appender = if cfg.get_string("app.env").unwrap_or("dev".to_string()) == "dev" {
                 // 开发环境，日志输出到控制台
                 tracing_appender::non_blocking(std::io::stdout())
             } else {

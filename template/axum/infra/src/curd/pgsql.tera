@@ -15,7 +15,7 @@ use sqlx::{FromRow, PgPool, postgres::PgRow};
 ///     .values_panic(["demo".into()])
 ///     .to_owned();
 ///
-/// pgsql::create(&pool, stmt).await
+/// let ret = pgsql::create(&pool, stmt).await;
 /// ```
 pub async fn create<T>(db: &PgPool, stmt: InsertStatement) -> anyhow::Result<T>
 where
@@ -45,7 +45,7 @@ where
 ///     .values_panic(["bar".into()])
 ///     .to_owned();
 ///
-/// pgsql::batch_create(&pool, stmt).await
+/// let ret = pgsql::batch_create(&pool, stmt).await;
 /// ```
 pub async fn batch_create<T>(db: &PgPool, stmt: InsertStatement) -> anyhow::Result<Vec<T>>
 where
@@ -74,7 +74,7 @@ where
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// pgsql::update(&pool, stmt).await
+/// let ret = pgsql::update(&pool, stmt).await;
 /// ```
 pub async fn update(db: &PgPool, stmt: UpdateStatement) -> anyhow::Result<u64> {
     // SQL日志
@@ -97,7 +97,7 @@ pub async fn update(db: &PgPool, stmt: UpdateStatement) -> anyhow::Result<u64> {
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// pgsql::delete(&pool, stmt).await
+/// let ret = pgsql::delete(&pool, stmt).await;
 /// ```
 pub async fn delete(db: &PgPool, stmt: DeleteStatement) -> anyhow::Result<u64> {
     // SQL日志
@@ -120,7 +120,7 @@ pub async fn delete(db: &PgPool, stmt: DeleteStatement) -> anyhow::Result<u64> {
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// pgsql::count(&pool, stmt).await
+/// let ret = pgsql::count(&pool, stmt).await;
 /// ```
 pub async fn count(db: &PgPool, mut stmt: SelectStatement) -> anyhow::Result<i64> {
     stmt.clear_selects();
@@ -148,7 +148,7 @@ pub async fn count(db: &PgPool, mut stmt: SelectStatement) -> anyhow::Result<i64
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// pgsql::find_one::<model::Demo>(&pool, stmt).await
+/// let ret = pgsql::find_one::<model::Demo>(&pool, stmt).await;
 /// ```
 pub async fn find_one<T>(db: &PgPool, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
 where
@@ -179,7 +179,7 @@ where
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// pgsql::find_all::<model::Demo>(&pool, stmt).await
+/// let ret = pgsql::find_all::<model::Demo>(&pool, stmt).await;
 /// ```
 pub async fn find_all<T>(db: &PgPool, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
 where
@@ -209,7 +209,7 @@ where
 ///     .order_by(table::Demo::Id, Order::Desc)
 ///     .to_owned();
 ///
-/// pgsql::paginate::<model::Demo>(&pool, stmt, 1, 10).await
+/// let ret = pgsql::paginate::<model::Demo>(&pool, stmt, 1, 10).await;
 /// ```
 pub async fn paginate<T>(
     db: &PgPool,

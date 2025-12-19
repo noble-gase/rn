@@ -12,15 +12,17 @@ pub async fn get_by_id<T>(
 where
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
-    let mut stmt = Query::select()
+    let mut query = Query::select();
+
+    let stmt = query
         .from(table::Demo::Table)
-        .and_where(Expr::col(table::Demo::Id).eq(id))
-        .to_owned();
+        .and_where(Expr::col(table::Demo::Id).eq(id));
 
-    stmt = match cols {
-        None => stmt.expr(Expr::cust("*")).to_owned(),
-        Some(v) => stmt.columns(v).to_owned(),
-    };
+    if let Some(v) = cols {
+        stmt.columns(v);
+    } else {
+        stmt.expr(Expr::cust("*"));
+    }
 
-    mysql::find_one(ctx.db(), stmt).await
+    mysql::find_one(ctx.db(), stmt.to_owned()).await
 }

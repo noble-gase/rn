@@ -23,7 +23,7 @@ pub async fn hello(depot: &mut Depot, req: &mut Request) -> ApiResult<RespHello>
         .with_context(|| make_ctx("request body parsed failed"))?;
 
     if let Err(e) = params.validate() {
-        return Err(ApiErr::InvalidParams(e.to_string()));
+        return Err(ApiErr::Params(e.to_string()));
     }
 
     let ctx = depot.obtain::<Arc<AppState>>().unwrap();

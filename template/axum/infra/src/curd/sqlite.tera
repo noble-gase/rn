@@ -15,7 +15,7 @@ use sqlx::{FromRow, SqlitePool, sqlite::SqliteRow};
 ///     .values_panic(["demo".into()])
 ///     .to_owned();
 ///
-/// sqlite::create(&pool, stmt).await
+/// let ret = sqlite::create(&pool, stmt).await;
 /// ```
 pub async fn create(db: &SqlitePool, stmt: InsertStatement) -> anyhow::Result<i64> {
     // SQL日志
@@ -39,7 +39,7 @@ pub async fn create(db: &SqlitePool, stmt: InsertStatement) -> anyhow::Result<i6
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// sqlite::update(&pool, stmt).await
+/// let ret = sqlite::update(&pool, stmt).await;
 /// ```
 pub async fn update(db: &SqlitePool, stmt: UpdateStatement) -> anyhow::Result<u64> {
     // SQL日志
@@ -62,7 +62,7 @@ pub async fn update(db: &SqlitePool, stmt: UpdateStatement) -> anyhow::Result<u6
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// sqlite::delete(&pool, stmt).await
+/// let ret = sqlite::delete(&pool, stmt).await;
 /// ```
 pub async fn delete(db: &SqlitePool, stmt: DeleteStatement) -> anyhow::Result<u64> {
     // SQL日志
@@ -85,7 +85,7 @@ pub async fn delete(db: &SqlitePool, stmt: DeleteStatement) -> anyhow::Result<u6
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// sqlite::count(&pool, stmt).await
+/// let ret = sqlite::count(&pool, stmt).await;
 /// ```
 pub async fn count(db: &SqlitePool, mut stmt: SelectStatement) -> anyhow::Result<i64> {
     stmt.clear_selects();
@@ -113,7 +113,7 @@ pub async fn count(db: &SqlitePool, mut stmt: SelectStatement) -> anyhow::Result
 ///     .and_where(Expr::col(table::Demo::Id).eq(1))
 ///     .to_owned();
 ///
-/// sqlite::find_one::<model::Demo>(&pool, stmt).await
+/// let ret = sqlite::find_one::<model::Demo>(&pool, stmt).await;
 /// ```
 pub async fn find_one<T>(db: &SqlitePool, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
 where
@@ -144,7 +144,7 @@ where
 ///     .and_where(Expr::col(table::Demo::Name).like("%demo%"))
 ///     .to_owned();
 ///
-/// sqlite::find_all::<model::Demo>(&pool, stmt).await
+/// let ret = sqlite::find_all::<model::Demo>(&pool, stmt).await;
 /// ```
 pub async fn find_all<T>(db: &SqlitePool, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
 where
@@ -174,7 +174,7 @@ where
 ///     .order_by(table::Demo::Id, Order::Desc)
 ///     .to_owned();
 ///
-/// sqlite::paginate::<model::Demo>(&pool, stmt, 1, 10).await
+/// let ret = sqlite::paginate::<model::Demo>(&pool, stmt, 1, 10).await;
 /// ```
 pub async fn paginate<T>(
     db: &SqlitePool,
