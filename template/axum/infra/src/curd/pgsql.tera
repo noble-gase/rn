@@ -2,7 +2,7 @@ use sea_query::{
     DeleteStatement, Expr, InsertStatement, PostgresQueryBuilder, SelectStatement, UpdateStatement,
 };
 use sea_query_binder::SqlxBinder;
-use sqlx::{FromRow, PgPool, postgres::PgRow};
+use sqlx::{Executor, FromRow, Postgres, postgres::PgRow};
 
 /// 插入记录
 ///
@@ -17,8 +17,9 @@ use sqlx::{FromRow, PgPool, postgres::PgRow};
 ///
 /// let ret = pgsql::create(&pool, stmt).await;
 /// ```
-pub async fn create<T>(db: &PgPool, stmt: InsertStatement) -> anyhow::Result<T>
+pub async fn create<'e, E, T>(db: E, stmt: InsertStatement) -> anyhow::Result<T>
 where
+    E: Executor<'e, Database = Postgres>,
     T: for<'r> FromRow<'r, PgRow> + Send + Unpin,
 {
     // SQL日志
@@ -47,8 +48,9 @@ where
 ///
 /// let ret = pgsql::batch_create(&pool, stmt).await;
 /// ```
-pub async fn batch_create<T>(db: &PgPool, stmt: InsertStatement) -> anyhow::Result<Vec<T>>
+pub async fn batch_create<'e, E, T>(db: E, stmt: InsertStatement) -> anyhow::Result<Vec<T>>
 where
+    E: Executor<'e, Database = Postgres>,
     T: for<'r> FromRow<'r, PgRow> + Send + Unpin,
 {
     // SQL日志
@@ -76,7 +78,10 @@ where
 ///
 /// let ret = pgsql::update(&pool, stmt).await;
 /// ```
-pub async fn update(db: &PgPool, stmt: UpdateStatement) -> anyhow::Result<u64> {
+pub async fn update<'e, E>(db: E, stmt: UpdateStatement) -> anyhow::Result<u64>
+where
+    E: Executor<'e, Database = Postgres>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(PostgresQueryBuilder));
 
@@ -99,7 +104,10 @@ pub async fn update(db: &PgPool, stmt: UpdateStatement) -> anyhow::Result<u64> {
 ///
 /// let ret = pgsql::delete(&pool, stmt).await;
 /// ```
-pub async fn delete(db: &PgPool, stmt: DeleteStatement) -> anyhow::Result<u64> {
+pub async fn delete<'e, E>(db: E, stmt: DeleteStatement) -> anyhow::Result<u64>
+where
+    E: Executor<'e, Database = Postgres>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(PostgresQueryBuilder));
 
@@ -122,7 +130,10 @@ pub async fn delete(db: &PgPool, stmt: DeleteStatement) -> anyhow::Result<u64> {
 ///
 /// let ret = pgsql::count(&pool, stmt).await;
 /// ```
-pub async fn count(db: &PgPool, mut stmt: SelectStatement) -> anyhow::Result<i64> {
+pub async fn count<'e, E>(db: E, mut stmt: SelectStatement) -> anyhow::Result<i64>
+where
+    E: Executor<'e, Database = Postgres>,
+{
     stmt.clear_selects();
     stmt.clear_order_by();
     // SELECT COUNT(*)
@@ -150,8 +161,9 @@ pub async fn count(db: &PgPool, mut stmt: SelectStatement) -> anyhow::Result<i64
 ///
 /// let ret = pgsql::find_one::<model::Demo>(&pool, stmt).await;
 /// ```
-pub async fn find_one<T>(db: &PgPool, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
+pub async fn find_one<'e, E, T>(db: E, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
 where
+    E: Executor<'e, Database = Postgres>,
     T: for<'r> FromRow<'r, PgRow> + Send + Unpin,
 {
     stmt.limit(1);
@@ -181,8 +193,9 @@ where
 ///
 /// let ret = pgsql::find_all::<model::Demo>(&pool, stmt).await;
 /// ```
-pub async fn find_all<T>(db: &PgPool, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
+pub async fn find_all<'e, E, T>(db: E, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
 where
+    E: Executor<'e, Database = Postgres>,
     T: for<'r> FromRow<'r, PgRow> + Send + Unpin,
 {
     // SQL日志
@@ -211,13 +224,14 @@ where
 ///
 /// let ret = pgsql::paginate::<model::Demo>(&pool, stmt, 1, 10).await;
 /// ```
-pub async fn paginate<T>(
-    db: &PgPool,
+pub async fn paginate<'e, E, T>(
+    db: E,
     mut stmt: SelectStatement,
     mut page: i32,
     mut size: i32,
 ) -> anyhow::Result<(Vec<T>, i64)>
 where
+    E: Executor<'e, Database = Postgres> + Copy,
     T: for<'r> FromRow<'r, PgRow> + Send + Unpin,
 {
     // 构建 count 查询

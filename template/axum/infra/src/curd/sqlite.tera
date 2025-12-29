@@ -2,7 +2,7 @@ use sea_query::{
     DeleteStatement, Expr, InsertStatement, SelectStatement, SqliteQueryBuilder, UpdateStatement,
 };
 use sea_query_binder::SqlxBinder;
-use sqlx::{FromRow, SqlitePool, sqlite::SqliteRow};
+use sqlx::{Executor, FromRow, Sqlite, sqlite::SqliteRow};
 
 /// 插入记录
 ///
@@ -17,7 +17,10 @@ use sqlx::{FromRow, SqlitePool, sqlite::SqliteRow};
 ///
 /// let ret = sqlite::create(&pool, stmt).await;
 /// ```
-pub async fn create(db: &SqlitePool, stmt: InsertStatement) -> anyhow::Result<i64> {
+pub async fn create<'e, E>(db: E, stmt: InsertStatement) -> anyhow::Result<i64>
+where
+    E: Executor<'e, Database = Sqlite>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(SqliteQueryBuilder));
 
@@ -41,7 +44,10 @@ pub async fn create(db: &SqlitePool, stmt: InsertStatement) -> anyhow::Result<i6
 ///
 /// let ret = sqlite::update(&pool, stmt).await;
 /// ```
-pub async fn update(db: &SqlitePool, stmt: UpdateStatement) -> anyhow::Result<u64> {
+pub async fn update<'e, E>(db: E, stmt: UpdateStatement) -> anyhow::Result<u64>
+where
+    E: Executor<'e, Database = Sqlite>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(SqliteQueryBuilder));
 
@@ -64,7 +70,10 @@ pub async fn update(db: &SqlitePool, stmt: UpdateStatement) -> anyhow::Result<u6
 ///
 /// let ret = sqlite::delete(&pool, stmt).await;
 /// ```
-pub async fn delete(db: &SqlitePool, stmt: DeleteStatement) -> anyhow::Result<u64> {
+pub async fn delete<'e, E>(db: E, stmt: DeleteStatement) -> anyhow::Result<u64>
+where
+    E: Executor<'e, Database = Sqlite>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(SqliteQueryBuilder));
 
@@ -87,7 +96,10 @@ pub async fn delete(db: &SqlitePool, stmt: DeleteStatement) -> anyhow::Result<u6
 ///
 /// let ret = sqlite::count(&pool, stmt).await;
 /// ```
-pub async fn count(db: &SqlitePool, mut stmt: SelectStatement) -> anyhow::Result<i64> {
+pub async fn count<'e, E>(db: E, mut stmt: SelectStatement) -> anyhow::Result<i64>
+where
+    E: Executor<'e, Database = Sqlite>,
+{
     stmt.clear_selects();
     stmt.clear_order_by();
     // SELECT COUNT(*)
@@ -115,8 +127,9 @@ pub async fn count(db: &SqlitePool, mut stmt: SelectStatement) -> anyhow::Result
 ///
 /// let ret = sqlite::find_one::<model::Demo>(&pool, stmt).await;
 /// ```
-pub async fn find_one<T>(db: &SqlitePool, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
+pub async fn find_one<'e, E, T>(db: E, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
 where
+    E: Executor<'e, Database = Sqlite>,
     T: for<'r> FromRow<'r, SqliteRow> + Send + Unpin,
 {
     stmt.limit(1);
@@ -146,8 +159,9 @@ where
 ///
 /// let ret = sqlite::find_all::<model::Demo>(&pool, stmt).await;
 /// ```
-pub async fn find_all<T>(db: &SqlitePool, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
+pub async fn find_all<'e, E, T>(db: E, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
 where
+    E: Executor<'e, Database = Sqlite>,
     T: for<'r> FromRow<'r, SqliteRow> + Send + Unpin,
 {
     // SQL日志
@@ -176,13 +190,14 @@ where
 ///
 /// let ret = sqlite::paginate::<model::Demo>(&pool, stmt, 1, 10).await;
 /// ```
-pub async fn paginate<T>(
-    db: &SqlitePool,
+pub async fn paginate<'e, E, T>(
+    db: E,
     mut stmt: SelectStatement,
     mut page: i32,
     mut size: i32,
 ) -> anyhow::Result<(Vec<T>, i64)>
 where
+    E: Executor<'e, Database = Sqlite> + Copy,
     T: for<'r> FromRow<'r, SqliteRow> + Send + Unpin,
 {
     // 构建 count 查询

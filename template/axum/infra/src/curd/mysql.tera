@@ -2,7 +2,7 @@ use sea_query::{
     DeleteStatement, Expr, InsertStatement, MysqlQueryBuilder, SelectStatement, UpdateStatement,
 };
 use sea_query_binder::SqlxBinder;
-use sqlx::{FromRow, MySqlPool, mysql::MySqlRow};
+use sqlx::{Executor, FromRow, MySql, mysql::MySqlRow};
 
 /// 插入记录
 ///
@@ -17,7 +17,10 @@ use sqlx::{FromRow, MySqlPool, mysql::MySqlRow};
 ///
 /// let ret = mysql::create(&pool, stmt).await;
 /// ```
-pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> anyhow::Result<u64> {
+pub async fn create<'e, E>(db: E, stmt: InsertStatement) -> anyhow::Result<u64>
+where
+    E: Executor<'e, Database = MySql>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(MysqlQueryBuilder));
 
@@ -41,7 +44,10 @@ pub async fn create(db: &MySqlPool, stmt: InsertStatement) -> anyhow::Result<u64
 ///
 /// let ret = mysql::update(&pool, stmt).await;
 /// ```
-pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> anyhow::Result<u64> {
+pub async fn update<'e, E>(db: E, stmt: UpdateStatement) -> anyhow::Result<u64>
+where
+    E: Executor<'e, Database = MySql>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(MysqlQueryBuilder));
 
@@ -64,7 +70,10 @@ pub async fn update(db: &MySqlPool, stmt: UpdateStatement) -> anyhow::Result<u64
 ///
 /// let ret = mysql::delete(&pool, stmt).await;
 /// ```
-pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> anyhow::Result<u64> {
+pub async fn delete<'e, E>(db: E, stmt: DeleteStatement) -> anyhow::Result<u64>
+where
+    E: Executor<'e, Database = MySql>,
+{
     // SQL日志
     tracing::info!(SQL = stmt.to_string(MysqlQueryBuilder));
 
@@ -87,7 +96,10 @@ pub async fn delete(db: &MySqlPool, stmt: DeleteStatement) -> anyhow::Result<u64
 ///
 /// let ret = mysql::count(&pool, stmt).await;
 /// ```
-pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<i64> {
+pub async fn count<'e, E>(db: E, mut stmt: SelectStatement) -> anyhow::Result<i64>
+where
+    E: Executor<'e, Database = MySql>,
+{
     stmt.clear_selects();
     stmt.clear_order_by();
     // SELECT COUNT(*)
@@ -115,8 +127,9 @@ pub async fn count(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<
 ///
 /// let ret = mysql::find_one::<model::Demo>(&pool, stmt).await;
 /// ```
-pub async fn find_one<T>(db: &MySqlPool, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
+pub async fn find_one<'e, E, T>(db: E, mut stmt: SelectStatement) -> anyhow::Result<Option<T>>
 where
+    E: Executor<'e, Database = MySql>,
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
     stmt.limit(1);
@@ -146,8 +159,9 @@ where
 ///
 /// let ret = mysql::find_all::<model::Demo>(&pool, stmt).await;
 /// ```
-pub async fn find_all<T>(db: &MySqlPool, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
+pub async fn find_all<'e, E, T>(db: E, stmt: SelectStatement) -> anyhow::Result<Vec<T>>
 where
+    E: Executor<'e, Database = MySql>,
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
     // SQL日志
@@ -176,13 +190,14 @@ where
 ///
 /// let ret = mysql::paginate::<model::Demo>(&pool, stmt, 1, 10).await;
 /// ```
-pub async fn paginate<T>(
-    db: &MySqlPool,
+pub async fn paginate<'e, E, T>(
+    db: E,
     mut stmt: SelectStatement,
     mut page: i32,
     mut size: i32,
 ) -> anyhow::Result<(Vec<T>, i64)>
 where
+    E: Executor<'e, Database = MySql> + Copy,
     T: for<'r> FromRow<'r, MySqlRow> + Send + Unpin,
 {
     // 构建 count 查询

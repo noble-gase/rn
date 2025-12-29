@@ -56,10 +56,14 @@ impl RedisFactory for Cluster {
 /// # Examples
 ///
 /// ```
-/// // [single] dsn = "redis://127.0.0.1:6379/0"
+/// // DSN
+/// // redis://:<password>@<host>:6379/<db>
+/// // redis://<username>:<password>@<host>:6379/<db>
+///
+/// // 单节点
 /// let x = cache::new::<cache::Single>("config-key").await;
 ///
-/// // [cluster] dsn = ["redis://127.0.0.1:6379"]
+/// // 集群
 /// let x = cache::new::<cache::Cluster>("config-key").await;
 /// ```
 pub async fn new<F>(cfg_key: &str) -> anyhow::Result<bb8::Pool<F::Output>>
