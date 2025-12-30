@@ -8,17 +8,17 @@ use sqlx::{
 use crate::core::config::config;
 
 pub trait DBFactory {
-    type Output: Database;
+    type DB: Database;
 
-    fn build() -> PoolOptions<Self::Output>;
+    fn build() -> PoolOptions<Self::DB>;
 }
 
 pub struct MySQL;
 
 impl DBFactory for MySQL {
-    type Output = MySql;
+    type DB = MySql;
 
-    fn build() -> PoolOptions<Self::Output> {
+    fn build() -> PoolOptions<Self::DB> {
         MySqlPoolOptions::new()
     }
 }
@@ -26,9 +26,9 @@ impl DBFactory for MySQL {
 pub struct PgSQL;
 
 impl DBFactory for PgSQL {
-    type Output = Postgres;
+    type DB = Postgres;
 
-    fn build() -> PoolOptions<Self::Output> {
+    fn build() -> PoolOptions<Self::DB> {
         PgPoolOptions::new()
     }
 }
@@ -36,9 +36,9 @@ impl DBFactory for PgSQL {
 pub struct SQLite;
 
 impl DBFactory for SQLite {
-    type Output = Sqlite;
+    type DB = Sqlite;
 
-    fn build() -> PoolOptions<Self::Output> {
+    fn build() -> PoolOptions<Self::DB> {
         SqlitePoolOptions::new()
     }
 }
@@ -57,7 +57,7 @@ impl DBFactory for SQLite {
 /// // [SQLite] sqlite::memory:?cache=shared" || dsn = "sqlite://</path/test.db>
 /// let x = db::new::<db::SQLite>("config-key").await;
 /// ```
-pub async fn new<F>(cfg_key: &str) -> anyhow::Result<Pool<F::Output>>
+pub async fn new<F>(cfg_key: &str) -> anyhow::Result<Pool<F::DB>>
 where
     F: DBFactory,
 {

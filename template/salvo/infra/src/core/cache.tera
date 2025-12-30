@@ -5,38 +5,38 @@ use kr::manager::{bb8_redis, bb8_redis_cluster};
 
 use crate::core::config::config;
 
-pub type SingleConn = bb8_redis::RedisConnectionManager;
+pub type SingleManager = bb8_redis::RedisConnectionManager;
 
-pub type ClusterConn = bb8_redis_cluster::RedisClusterManager;
+pub type ClusterManager = bb8_redis_cluster::RedisClusterManager;
 
 pub trait RedisFactory {
-    type Output: ManageConnection<Error: std::error::Error + Send + Sync + 'static>;
+    type Manager: ManageConnection<Error: std::error::Error + Send + Sync + 'static>;
 
-    fn build(cfg_key: &str) -> anyhow::Result<Self::Output>;
+    fn build(cfg_key: &str) -> anyhow::Result<Self::Manager>;
 }
 
 pub struct Single;
 
 impl RedisFactory for Single {
-    type Output = SingleConn;
+    type Manager = SingleManager;
 
-    fn build(cfg_key: &str) -> anyhow::Result<Self::Output> {
+    fn build(cfg_key: &str) -> anyhow::Result<Self::Manager> {
         let dsn = config().get_string(&format!("{}.dsn", cfg_key))?;
 
         let client = redis::Client::open(dsn)?;
         let mut conn = client.get_connection()?;
         let _ = redis::cmd("PING").query::<String>(&mut conn)?;
 
-        Ok(SingleConn::new(client))
+        Ok(SingleManager::new(client))
     }
 }
 
 pub struct Cluster;
 
 impl RedisFactory for Cluster {
-    type Output = ClusterConn;
+    type Manager = ClusterManager;
 
-    fn build(cfg_key: &str) -> anyhow::Result<Self::Output> {
+    fn build(cfg_key: &str) -> anyhow::Result<Self::Manager> {
         let nodes = config()
             .get_array(&format!("{}.dsn", cfg_key))?
             .into_iter()
@@ -47,7 +47,7 @@ impl RedisFactory for Cluster {
         let mut conn = client.get_connection()?;
         let _ = redis::cmd("PING").query::<String>(&mut conn)?;
 
-        Ok(ClusterConn::new(client))
+        Ok(ClusterManager::new(client))
     }
 }
 
@@ -57,8 +57,9 @@ impl RedisFactory for Cluster {
 ///
 /// ```
 /// // DSN
-/// // redis://:<password>@<host>:6379/<db>
-/// // redis://<username>:<password>@<host>:6379/<db>
+/// // redis://<host>:6379/<db>
+/// // redis://:<pass>@<host>:6379/<db>
+/// // redis://<user>:<pass>@<host>:6379/<db>
 ///
 /// // 单节点
 /// let x = cache::new::<cache::Single>("config-key").await;
@@ -66,7 +67,7 @@ impl RedisFactory for Cluster {
 /// // 集群
 /// let x = cache::new::<cache::Cluster>("config-key").await;
 /// ```
-pub async fn new<F>(cfg_key: &str) -> anyhow::Result<bb8::Pool<F::Output>>
+pub async fn new<F>(cfg_key: &str) -> anyhow::Result<bb8::Pool<F::Manager>>
 where
     F: RedisFactory,
 {
@@ -76,11 +77,19 @@ where
 
     let max_size = cfg
         .get_int(&format!("{}.options.max_size", cfg_key))
-        .unwrap_or(20);
-    let min_idle = cfg.get_int("{}.options.min_idle").unwrap_or(10);
-    let conn_timeout = cfg.get_int("{}.options.conn_timeout").unwrap_or(10);
-    let idle_timeout = cfg.get_int("{}.options.idle_timeout").unwrap_or(300);
-    let max_lifetime = cfg.get_int("{}.options.max_lifetime").unwrap_or(600);
+        .unwrap_or(100);
+    let min_idle = cfg
+        .get_int(&format!("{}.options.min_idle", cfg_key))
+        .unwrap_or(10);
+    let conn_timeout = cfg
+        .get_int(&format!("{}.options.conn_timeout", cfg_key))
+        .unwrap_or(10);
+    let idle_timeout = cfg
+        .get_int(&format!("{}.options.idle_timeout", cfg_key))
+        .unwrap_or(300);
+    let max_lifetime = cfg
+        .get_int(&format!("{}.options.max_lifetime", cfg_key))
+        .unwrap_or(600);
 
     let pool = bb8::Pool::builder()
         .max_size(max_size as u32)

@@ -8,7 +8,7 @@ use anyhow::Context;
 #[derive(Clone, Default)]
 pub struct AppState {
     db_default: Option<sqlx::MySqlPool>,
-    redis_default: Option<bb8::Pool<cache::SingleConn>>,
+    redis_default: Option<bb8::Pool<cache::SingleManager>>,
 }
 
 impl AppState {
@@ -33,7 +33,7 @@ impl AppState {
             .expect("DB(default) is None (forgotten initialize?)")
     }
 
-    pub fn redis(&self) -> &bb8::Pool<cache::SingleConn> {
+    pub fn redis(&self) -> &bb8::Pool<cache::SingleManager> {
         self.redis_default
             .as_ref()
             .expect("Redis(default) is None (forgotten initialize?)")

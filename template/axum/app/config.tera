@@ -5,16 +5,16 @@ debug = false
 secret = "3f4e25e75c08dbf60ad6533c50167ce3"
 
 [db]
-dsn = "mysql://username:password@localhost:3306/dbname&charset=utf8mb4&parseTime=True&loc=Local"
-options = { min_conns = 10, max_conns = 20, conn_timeout = 10, idle_timeout = 300, max_lifetime = 60 }
+dsn = "mysql://username:password@127.0.0.1:3306/dbname&charset=utf8mb4&parseTime=True&loc=Local"
+options = { min_conns = 10, max_conns = 100, conn_timeout = 10, idle_timeout = 300, max_lifetime = 600 }
 
 [redis]
 dsn = "redis://127.0.0.1:6379/0"
-options = { max_size = 20, min_idle = 10, conn_timeout = 10, idle_timeout = 300, max_lifetime = 60 }
+options = { max_size = 100, min_idle = 10, conn_timeout = 10, idle_timeout = 300, max_lifetime = 600 }
 
 [redis-cluster]
-dsn = ["redis://127.0.0.1:6379"]
-options = { max_size = 20, min_idle = 10, conn_timeout = 10, idle_timeout = 300, max_lifetime = 60 }
+dsn = ["redis://127.0.0.1:6379/0"]
+options = { max_size = 100, min_idle = 10, conn_timeout = 10, idle_timeout = 300, max_lifetime = 600 }
 
 [log]
 path = "logs"
