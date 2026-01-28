@@ -1,66 +1,11 @@
 use std::time::Duration;
 
-use sqlx::{
-    Database, MySql, Pool, Postgres, Sqlite, mysql::MySqlPoolOptions, pool::PoolOptions,
-    postgres::PgPoolOptions, sqlite::SqlitePoolOptions,
-};
+use kr::sql;
+use sqlx::{MySql, Pool};
 
 use crate::core::config::config;
 
-pub trait DBFactory {
-    type DB: Database;
-
-    fn build() -> PoolOptions<Self::DB>;
-}
-
-pub struct MySQL;
-
-impl DBFactory for MySQL {
-    type DB = MySql;
-
-    fn build() -> PoolOptions<Self::DB> {
-        MySqlPoolOptions::new()
-    }
-}
-
-pub struct PgSQL;
-
-impl DBFactory for PgSQL {
-    type DB = Postgres;
-
-    fn build() -> PoolOptions<Self::DB> {
-        PgPoolOptions::new()
-    }
-}
-
-pub struct SQLite;
-
-impl DBFactory for SQLite {
-    type DB = Sqlite;
-
-    fn build() -> PoolOptions<Self::DB> {
-        SqlitePoolOptions::new()
-    }
-}
-
-/// 生成 DB 连接池
-///
-/// # Examples
-///
-/// ```
-/// // [MySQL] mysql://<username>:<password>@<host>:3306/<db>&charset=utf8mb4&parseTime=True&loc=Local
-/// let x = db::new::<db::MySQL>("config-key").await;
-///
-/// // [PgSQL] postgres://<username>:<password>@<host>:5432/<db>?options=-c%20TimeZone%3DAsia/Shanghai
-/// let x = db::new::<db::PgSQL>("config-key").await;
-///
-/// // [SQLite] sqlite::memory:?cache=shared" || dsn = "sqlite://</path/test.db>
-/// let x = db::new::<db::SQLite>("config-key").await;
-/// ```
-pub async fn new<F>(cfg_key: &str) -> anyhow::Result<Pool<F::DB>>
-where
-    F: DBFactory,
-{
+pub async fn new(cfg_key: &str) -> anyhow::Result<Pool<MySql>> {
     let cfg = config();
 
     let dsn = cfg.get_string(&format!("{}.dsn", cfg_key))?;
@@ -81,14 +26,15 @@ where
         .get_int(&format!("{}.options.max_lifetime", cfg_key))
         .unwrap_or(600);
 
-    let pool = F::build()
-        .min_connections(min_conns as u32)
-        .max_connections(max_conns as u32)
-        .acquire_timeout(Duration::from_secs(conn_timeout as u64))
-        .idle_timeout(Duration::from_secs(idle_timeout as u64))
-        .max_lifetime(Duration::from_secs(max_lifetime as u64))
-        .connect(&dsn)
-        .await?;
+    let params = sql::Params {
+        min_conns: Some(min_conns as u32),
+        max_conns: Some(max_conns as u32),
+        conn_timeout: Some(Duration::from_secs(conn_timeout as u64)),
+        idle_timeout: Some(Duration::from_secs(idle_timeout as u64)),
+        max_lifetime: Some(Duration::from_secs(max_lifetime as u64)),
+    };
+
+    let pool = sql::open::<sql::MySQL>(dsn, Some(params)).await?;
 
     Ok(pool)
 }

@@ -15,30 +15,38 @@ repo = { path = "repo", version = "0.1.0" }
 anyhow = "1"
 thiserror = "2"
 futures = "0.3"
-tokio = "1"
-clap = "4.5"
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4.5", features = ["derive"] }
 tracing = "0.1"
-tracing-subscriber = "0.3"
+tracing-subscriber = { version = "0.3", features = ["json"] }
 tracing-appender = "0.2"
 hostname = "^0.4"
 rand = "0.8"
 base64 = "0.22"
 bcrypt = "0.15"
-serde = "1"
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 config = "0.14"
-time = "0.3"
+jiff = "0.2"
+time = { version = "0.3", features = ["serde"] }
 bb8 = "0.9"
-uuid = "1.18"
-sqlx = "0.8"
-redis = "0.32"
+uuid = { version = "1.18", features = ["v4"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "time"] }
+redis = { version = "0.32", features = ["tokio-comp"] }
 sea-query = "0.32"
-sea-query-binder = "0.7"
-prometheus = "0.14"
-validator = "0.16"
+prometheus = { version = "0.14", features = ["process"] }
+validator = { version = "0.16", features = ["derive"] }
 hyper = "1"
 http = "1"
 http-body = "1"
 http-body-util = "0.1"
-salvo = "0.75"
-kr = "0.6"
+salvo = { version = "0.75", features = [
+    "cors",
+    "http1",
+    "http2",
+    "http2-cleartext",
+    "affix-state",
+] }
+kr = { version = "0.7", features = [
+    "macros",
+] }

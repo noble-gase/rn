@@ -9,7 +9,8 @@ use axum::{
 };
 use http_body_util::BodyExt;
 use hyper::HeaderMap;
-use kr::{make_ctx, times};
+use jiff::Zoned;
+use kr::make_ctx;
 use serde_json::Value;
 
 use crate::status::api_err::ApiErr;
@@ -17,7 +18,7 @@ use crate::status::api_err::ApiErr;
 const MAX_LOG_SIZE: usize = 32 << 10; // 32KB
 
 pub async fn handle(request: Request, next: Next) -> Response {
-    let enter_time = times::now(None);
+    let enter_time = Zoned::now();
     let req_method = request.method().to_string();
     let req_uri = request.uri().to_string();
     let req_header = header_to_string(request.headers());
@@ -29,7 +30,7 @@ pub async fn handle(request: Request, next: Next) -> Response {
     };
 
     // 请求时长
-    let duration = (times::now(None) - enter_time).to_string();
+    let duration = Zoned::now().duration_since(&enter_time).as_millis_f64();
 
     tracing::info!(
         uri = req_uri,

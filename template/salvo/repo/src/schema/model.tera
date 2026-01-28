@@ -1,10 +1,10 @@
+use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
 
-#[derive(sqlx::FromRow, Debug)]
-#[allow(dead_code)]
+#[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 pub struct Demo {
-    id: i64,
-    name: String,
-    created_at: OffsetDateTime, // If datetime, use PrimitiveDateTime
-    updated_at: OffsetDateTime, // If datetime, use PrimitiveDateTime
+    pub id: i64,
+    pub name: String,
+    pub created_at: OffsetDateTime, // If datetime, use PrimitiveDateTime
+    pub updated_at: OffsetDateTime, // If datetime, use PrimitiveDateTime
 }

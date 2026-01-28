@@ -3,7 +3,7 @@ use http::{header::AUTHORIZATION, HeaderName};
 use tracing::Instrument;
 use uuid::Uuid;
 
-use crate::util::identity::Identity;
+use crate::util::iden::Identity;
 
 pub const TRACE_ID: HeaderName = HeaderName::from_static("x-trace-id");
 

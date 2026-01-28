@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use anyhow::Context;
 use http_body_util::BodyExt;
 use hyper::HeaderMap;
-use kr::{make_ctx, times};
+use jiff::Zoned;
+use kr::make_ctx;
 use salvo::{
-    async_trait,
+    Depot, FlowCtrl, Handler, Request, Response, Writer, async_trait,
     http::{ReqBody, ResBody},
-    Depot, FlowCtrl, Handler, Request, Response, Writer,
 };
 use serde_json::Value;
 
@@ -34,7 +34,7 @@ impl Handler for Log {
         resp: &mut Response,
         ctrl: &mut FlowCtrl,
     ) {
-        let enter_time = times::now(None);
+        let enter_time = Zoned::now();
         let req_method = req.method().to_string();
         let req_uri = req.uri().path_and_query().unwrap().to_string();
         let req_header = header_to_string(req.headers());
@@ -55,7 +55,7 @@ impl Handler for Log {
         let status = resp.status_code.unwrap_or_default().as_u16();
 
         // 请求时长
-        let duration = (times::now(None) - enter_time).to_string();
+        let duration = Zoned::now().duration_since(&enter_time).as_millis_f64();
 
         // 日志记录
         tracing::info!(

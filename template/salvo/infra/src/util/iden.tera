@@ -1,7 +1,7 @@
 use anyhow::Result;
-use base64::{prelude::BASE64_STANDARD, Engine};
+use base64::{Engine, prelude::BASE64_STANDARD};
+use jiff::Zoned;
 use kr::crypto::aes::CBC;
-use kr::times;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
@@ -29,7 +29,7 @@ impl Identity {
             i: id,
             r: role,
             t: token,
-            x: times::now(None).unix_timestamp() + EXPIRE_SECONDS,
+            x: Zoned::now().timestamp().as_second() + EXPIRE_SECONDS,
         }
     }
 
@@ -54,7 +54,7 @@ impl Identity {
         let key = secret.as_bytes();
 
         let cbc = CBC::new(key, &key[..16]);
-        let plain = match cbc.decrypt().data(&cipher).call() {
+        let plain = match cbc.decrypt(&cipher) {
             Err(e) => {
                 tracing::error!(err = ?e, "invalid auth_token");
                 return Identity::default();
@@ -75,7 +75,7 @@ impl Identity {
         let key = secret.as_bytes();
 
         let cbc = CBC::new(key, &key[..16]);
-        let cipher = cbc.encrypt().data(&plain).call()?;
+        let cipher = cbc.encrypt(&plain, None)?;
 
         Ok(BASE64_STANDARD.encode(cipher))
     }
@@ -89,7 +89,7 @@ impl Identity {
     }
 
     pub fn is_expired(&self) -> bool {
-        self.x > times::now(None).unix_timestamp()
+        self.x > Zoned::now().timestamp().as_second()
     }
 
     pub fn is_role(&self, role: Role) -> bool {

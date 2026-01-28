@@ -132,23 +132,6 @@ pub fn infra() -> Tera {
             "src/core/logger.rs",
             include_str!("../../template/salvo/infra/src/core/logger.tera"),
         ),
-        // curd
-        (
-            "src/curd/mod.rs",
-            include_str!("../../template/salvo/infra/src/curd/mod.tera"),
-        ),
-        (
-            "src/curd/mysql.rs",
-            include_str!("../../template/salvo/infra/src/curd/mysql.tera"),
-        ),
-        (
-            "src/curd/pgsql.rs",
-            include_str!("../../template/salvo/infra/src/curd/pgsql.tera"),
-        ),
-        (
-            "src/curd/sqlite.rs",
-            include_str!("../../template/salvo/infra/src/curd/sqlite.tera"),
-        ),
         // middleware
         (
             "src/middleware/mod.rs",
@@ -189,12 +172,8 @@ pub fn infra() -> Tera {
             include_str!("../../template/salvo/infra/src/util/mod.tera"),
         ),
         (
-            "src/util/helper.rs",
-            include_str!("../../template/salvo/infra/src/util/helper.tera"),
-        ),
-        (
-            "src/util/identity.rs",
-            include_str!("../../template/salvo/infra/src/util/identity.tera"),
+            "src/util/iden.rs",
+            include_str!("../../template/salvo/infra/src/util/iden.tera"),
         ),
     ])
     .unwrap();

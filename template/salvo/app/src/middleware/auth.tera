@@ -1,6 +1,6 @@
 use salvo::{async_trait, Depot, FlowCtrl, Handler, Request, Response, Writer};
 
-use infra::{status::api_err::ApiErr, util::identity::Identity};
+use infra::{status::api_err::ApiErr, util::iden::Identity};
 
 #[derive(Default)]
 pub struct Auth;

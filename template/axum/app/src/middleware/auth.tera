@@ -4,7 +4,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 
-use infra::{status::api_err::ApiErr, util::identity::Identity};
+use infra::{status::api_err::ApiErr, util::iden::Identity};
 
 pub async fn handle(request: Request, next: Next) -> Response {
     let identity = request.extensions().get::<Identity>();

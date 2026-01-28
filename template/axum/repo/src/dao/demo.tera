@@ -1,4 +1,5 @@
-use infra::{core::AppState, curd::mysql};
+use infra::core::AppState;
+use kr::sql::mysql;
 use sea_query::{Expr, Query};
 use sqlx::{FromRow, mysql::MySqlRow};
 

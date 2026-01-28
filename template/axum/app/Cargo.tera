@@ -11,17 +11,17 @@ infra = { workspace = true }
 repo = { workspace = true }
 anyhow = { workspace = true }
 futures = { workspace = true }
-tokio = { workspace = true, features = ["full"] }
-clap = { workspace = true, features = ["derive"] }
+tokio = { workspace = true }
+clap = { workspace = true }
 tracing = { workspace = true }
-serde = { workspace = true, features = ["derive"] }
-prometheus = { workspace = true, features = ["process"] }
-validator = { workspace = true, features = ["derive"] }
+serde = { workspace = true }
+prometheus = { workspace = true }
+validator = { workspace = true }
 hyper = { workspace = true }
 http = { workspace = true }
 http-body = { workspace = true }
 http-body-util = { workspace = true }
-tower-http = { workspace = true, features = ["cors"] }
-axum = { workspace = true, features = ["macros", "http2"] }
+tower-http = { workspace = true }
+axum = { workspace = true }
 axum-extra = { workspace = true }
 kr = { workspace = true }

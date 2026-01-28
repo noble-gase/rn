@@ -16,7 +16,7 @@ thiserror = { workspace = true }
 futures = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
-tracing-subscriber = { workspace = true, features = ["json"] }
+tracing-subscriber = { workspace = true }
 tracing-appender = { workspace = true }
 hostname = { workspace = true }
 rand = { workspace = true }
@@ -25,19 +25,13 @@ bcrypt = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 config = { workspace = true }
-time = { workspace = true }
+jiff = { workspace = true }
 bb8 = { workspace = true }
-uuid = { workspace = true, features = ["v4"] }
+uuid = { workspace = true }
 sqlx = { workspace = true }
-redis = { workspace = true, features = ["cluster", "cluster-async"] }
-sea-query = { workspace = true }
-sea-query-binder = { workspace = true, features = [
-    "sqlx-mysql",
-    "sqlx-postgres",
-    "sqlx-sqlite",
-] }
-prometheus = { workspace = true, features = ["process"] }
-validator = { workspace = true, features = ["derive"] }
+redis = { workspace = true }
+prometheus = { workspace = true }
+validator = { workspace = true }
 hyper = { workspace = true }
 http = { workspace = true }
 http-body = { workspace = true }
