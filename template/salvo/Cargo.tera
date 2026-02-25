@@ -47,6 +47,4 @@ salvo = { version = "0.75", features = [
     "http2-cleartext",
     "affix-state",
 ] }
-kr = { version = "0.7", features = [
-    "macros",
-] }
+kr = { version = "0.7", features = ["macros"] }

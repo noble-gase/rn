@@ -43,6 +43,4 @@ http-body-util = "0.1"
 tower-http = { version = "0.6", features = ["cors"] }
 axum = { version = "0.8", features = ["macros", "http2"] }
 axum-extra = "0.10"
-kr = { version = "0.7", features = [
-    "macros",
-] }
+kr = { version = "0.7", features = ["macros"] }
