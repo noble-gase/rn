@@ -53,14 +53,14 @@ pub fn app() -> Tera {
             "src/cmd/serve.rs",
             include_str!("../../template/axum/app/src/cmd/serve.tera"),
         ),
-        // handler
+        // api
         (
-            "src/handler/mod.rs",
-            include_str!("../../template/axum/app/src/handler/mod.tera"),
+            "src/api/mod.rs",
+            include_str!("../../template/axum/app/src/api/mod.tera"),
         ),
         (
-            "src/handler/greeter.rs",
-            include_str!("../../template/axum/app/src/handler/greeter.tera"),
+            "src/api/greeter.rs",
+            include_str!("../../template/axum/app/src/api/greeter.tera"),
         ),
         // router
         (
@@ -94,76 +94,76 @@ pub fn infra() -> Tera {
         // Cargo.toml
         (
             "Cargo.toml",
-            include_str!("../../template/axum/infra/Cargo.tera"),
+            include_str!("../../template/axum/crates/infra/Cargo.tera"),
         ),
         // lib.rs
         (
             "src/lib.rs",
-            include_str!("../../template/axum/infra/src/lib.tera"),
+            include_str!("../../template/axum/crates/infra/src/lib.tera"),
         ),
         // core
         (
             "src/core/mod.rs",
-            include_str!("../../template/axum/infra/src/core/mod.tera"),
+            include_str!("../../template/axum/crates/infra/src/core/mod.tera"),
         ),
         (
             "src/core/cache.rs",
-            include_str!("../../template/axum/infra/src/core/cache.tera"),
+            include_str!("../../template/axum/crates/infra/src/core/cache.tera"),
         ),
         (
             "src/core/config.rs",
-            include_str!("../../template/axum/infra/src/core/config.tera"),
+            include_str!("../../template/axum/crates/infra/src/core/config.tera"),
         ),
         (
             "src/core/db.rs",
-            include_str!("../../template/axum/infra/src/core/db.tera"),
+            include_str!("../../template/axum/crates/infra/src/core/db.tera"),
         ),
         (
             "src/core/log.rs",
-            include_str!("../../template/axum/infra/src/core/log.tera"),
+            include_str!("../../template/axum/crates/infra/src/core/log.tera"),
         ),
         // extract
         (
             "src/extract/mod.rs",
-            include_str!("../../template/axum/infra/src/extract/mod.tera"),
+            include_str!("../../template/axum/crates/infra/src/extract/mod.tera"),
         ),
         (
             "src/extract/json.rs",
-            include_str!("../../template/axum/infra/src/extract/json.tera"),
+            include_str!("../../template/axum/crates/infra/src/extract/json.tera"),
         ),
         // middleware
         (
             "src/middleware/mod.rs",
-            include_str!("../../template/axum/infra/src/middleware/mod.tera"),
+            include_str!("../../template/axum/crates/infra/src/middleware/mod.tera"),
         ),
         (
             "src/middleware/log.rs",
-            include_str!("../../template/axum/infra/src/middleware/log.tera"),
+            include_str!("../../template/axum/crates/infra/src/middleware/log.tera"),
         ),
         (
             "src/middleware/metric.rs",
-            include_str!("../../template/axum/infra/src/middleware/metric.tera"),
+            include_str!("../../template/axum/crates/infra/src/middleware/metric.tera"),
         ),
         (
             "src/middleware/panic.rs",
-            include_str!("../../template/axum/infra/src/middleware/panic.tera"),
+            include_str!("../../template/axum/crates/infra/src/middleware/panic.tera"),
         ),
         (
             "src/middleware/trace.rs",
-            include_str!("../../template/axum/infra/src/middleware/trace.tera"),
+            include_str!("../../template/axum/crates/infra/src/middleware/trace.tera"),
         ),
         // status
         (
             "src/status/mod.rs",
-            include_str!("../../template/axum/infra/src/status/mod.tera"),
+            include_str!("../../template/axum/crates/infra/src/status/mod.tera"),
         ),
         (
             "src/status/api_ok.rs",
-            include_str!("../../template/axum/infra/src/status/api_ok.tera"),
+            include_str!("../../template/axum/crates/infra/src/status/api_ok.tera"),
         ),
         (
             "src/status/api_err.rs",
-            include_str!("../../template/axum/infra/src/status/api_err.tera"),
+            include_str!("../../template/axum/crates/infra/src/status/api_err.tera"),
         ),
     ])
     .unwrap();
@@ -179,34 +179,34 @@ pub fn repo() -> Tera {
         // Cargo.toml
         (
             "Cargo.toml",
-            include_str!("../../template/axum/repo/Cargo.tera"),
+            include_str!("../../template/axum/crates/repo/Cargo.tera"),
         ),
         // lib.rs
         (
             "src/lib.rs",
-            include_str!("../../template/axum/repo/src/lib.tera"),
+            include_str!("../../template/axum/crates/repo/src/lib.tera"),
         ),
         // dao
         (
             "src/dao/mod.rs",
-            include_str!("../../template/axum/repo/src/dao/mod.tera"),
+            include_str!("../../template/axum/crates/repo/src/dao/mod.tera"),
         ),
         (
             "src/dao/demo.rs",
-            include_str!("../../template/axum/repo/src/dao/demo.tera"),
+            include_str!("../../template/axum/crates/repo/src/dao/demo.tera"),
         ),
         // schema
         (
             "src/schema/mod.rs",
-            include_str!("../../template/axum/repo/src/schema/mod.tera"),
+            include_str!("../../template/axum/crates/repo/src/schema/mod.tera"),
         ),
         (
             "src/schema/model.rs",
-            include_str!("../../template/axum/repo/src/schema/model.tera"),
+            include_str!("../../template/axum/crates/repo/src/schema/model.tera"),
         ),
         (
             "src/schema/table.rs",
-            include_str!("../../template/axum/repo/src/schema/table.tera"),
+            include_str!("../../template/axum/crates/repo/src/schema/table.tera"),
         ),
     ])
     .unwrap();

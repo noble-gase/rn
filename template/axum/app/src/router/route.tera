@@ -3,8 +3,8 @@ use std::sync::Arc;
 use axum::{routing::post, Router};
 use infra::core::AppState;
 
-use crate::handler::greeter;
+use crate::api;
 
 pub fn v1() -> Router<Arc<AppState>> {
-    Router::new().route("/greeter", post(greeter::hello))
+    Router::new().route("/greeter", post(api::greeter::hello))
 }

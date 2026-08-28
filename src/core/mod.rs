@@ -37,7 +37,7 @@ pub fn is_empty_dir(path: &Path) -> bool {
 
 pub fn build_actix_project(root: &Path, name: String, apps: Vec<String>) {
     let libs = (actix::global(), actix::infra(), actix::repo());
-    let members = gen_members(&apps, Some(vec!["infra".to_string(), "repo".to_string()]));
+    let members = gen_members(&apps);
 
     build_project(root, &name, &members, libs);
 
@@ -63,7 +63,7 @@ pub fn build_actix_app(root: &Path, apps: Vec<String>) {
 
 pub fn build_axum_project(root: &Path, name: String, apps: Vec<String>) {
     let libs = (axum::global(), axum::infra(), axum::repo());
-    let members = gen_members(&apps, Some(vec!["infra".to_string(), "repo".to_string()]));
+    let members = gen_members(&apps);
 
     build_project(root, &name, &members, libs);
 
@@ -89,7 +89,7 @@ pub fn build_axum_app(root: &Path, apps: Vec<String>) {
 
 pub fn build_salvo_project(root: &Path, name: String, apps: Vec<String>) {
     let libs = (salvo::global(), salvo::infra(), salvo::repo());
-    let members = gen_members(&apps, Some(vec!["infra".to_string(), "repo".to_string()]));
+    let members = gen_members(&apps);
 
     build_project(root, &name, &members, libs);
 
@@ -131,24 +131,27 @@ fn build_project(
     // global
     gen_files(&ctx, root, vec![], tera_global);
     // infra
-    gen_files(&ctx, root, vec!["infra"], tera_infra);
+    gen_files(&ctx, root, vec!["crates", "infra"], tera_infra);
     // repo
-    gen_files(&ctx, root, vec!["repo"], tera_repo);
+    gen_files(&ctx, root, vec!["crates", "repo"], tera_repo);
 }
 
 fn build_app(root: &Path, name: &str, crate_name: Option<&str>, template: tera::Tera) {
     // 创建app
     let mut ctx = Context::new();
-    let mut subset = vec!["app"];
+    let mut subset = Vec::new();
 
     // 模式
     ctx.insert("app_name", name);
     match crate_name {
         None => {
             ctx.insert("app_crate", "app");
+            subset.push("app");
         }
         Some(v) => {
             ctx.insert("app_crate", v);
+
+            subset.push("apps");
             subset.push(v);
 
             println!("🦀 Create application: {v}");
@@ -182,20 +185,16 @@ fn build_app(root: &Path, name: &str, crate_name: Option<&str>, template: tera::
     }
 }
 
-pub fn gen_members(apps: &[String], base: Option<Vec<String>>) -> String {
+pub fn gen_members(apps: &[String]) -> String {
     let mut members = Vec::new();
-
-    if let Some(list) = base {
-        for v in list {
-            members.push(v);
-        }
-    }
 
     if apps.is_empty() {
         members.push("app".to_string())
     } else {
-        members.push("app/*".to_string())
+        members.push("apps/*".to_string())
     }
+
+    members.push("crates/*".to_string());
 
     format!(
         "[{}]",

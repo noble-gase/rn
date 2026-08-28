@@ -39,26 +39,19 @@ og new --name demo # 创建demo项目
 │   ├── Cargo.toml
 │   ├── config.toml
 │   └── src/
-│       ├── cmd/
-│       ├── handler/
-│       ├── middleware/
-│       ├── router/
-│       ├── service/
+│       ├── ...
 │       └── main.rs
-├── infra/
-│   ├── Cargo.toml
-│   └── src/
-│       ├── core/
-│       ├── middleware/
-│       ├── status/
-│       ├── util/
-│       └── lib.rs
-└── repo/
-    ├── Cargo.toml
-    └── src/
-        ├── dao/
-        ├── schema/
-        └── lib.rs
+└── crates
+    ├── infra/
+    │   ├── Cargo.toml
+    │   └── src/
+    │       ├── ...
+    │       └── lib.rs
+    └── repo/
+        ├── Cargo.toml
+        └── src/
+            ├── ...
+            └── lib.rs
 
 ```
 
@@ -77,16 +70,12 @@ og app --name foo --name bar
 ├── Cargo.toml
 ├── Dockerfile.foo
 ├── Dockerfile.bar
-├── app/
+├── apps/
 │   ├── foo/
 │   │   ├── Cargo.toml
 │   │   ├── config.toml
 │   │   └── src/
-│   │       ├── cmd/
-│   │       ├── handler/
-│   │       ├── middleware/
-│   │       ├── router/
-│   │       ├── service/
+│   │       ├── ...
 │   │       └── main.rs
 │   └── bar/
 │       ├── Cargo.toml
@@ -94,16 +83,17 @@ og app --name foo --name bar
 │       └── src/
 │           ├── ...
 │           └── main.rs
-├── infra/
-│   ├── Cargo.toml
-│   └── src/
-│       ├── ...
-│       └── lib.rs
-└── repo/
-    ├── Cargo.toml
-    └── src/
-        ├── ...
-        └── lib.rs
+└── crates
+    ├── infra/
+    │   ├── Cargo.toml
+    │   └── src/
+    │       ├── ...
+    │       └── lib.rs
+    └── repo/
+        ├── Cargo.toml
+        └── src/
+            ├── ...
+            └── lib.rs
 ```
 
 </details>

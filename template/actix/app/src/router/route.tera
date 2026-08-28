@@ -1,7 +1,7 @@
 use actix_web::{Scope, web};
 
-use crate::handler;
+use crate::api;
 
 pub fn v1() -> Scope {
-    web::scope("/v1").route("/greeter", web::post().to(handler::greeter::hello))
+    web::scope("/v1").route("/greeter", web::post().to(api::greeter::hello))
 }
